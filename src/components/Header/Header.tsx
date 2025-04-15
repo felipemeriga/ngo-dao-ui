@@ -37,12 +37,6 @@ const Header: React.FC = () => {
     setAnchorEl(null);
   };
 
-  const handleOpenProposals = () => {
-    // Your logic for opening proposals goes here.
-    console.log("Open Proposals clicked");
-    handleClose();
-  };
-
   const handleCreateProposal = () => {
     // Your logic for creating a proposal goes here.
     console.log("Create Proposal clicked");
