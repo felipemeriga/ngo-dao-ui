@@ -1,17 +1,21 @@
-import React from 'react';
-import styled from '@mui/material/styles/styled';
-import Button, { ButtonProps } from '@mui/material/Button';
-import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import CircularProgress, { CircularProgressProps } from '@mui/material/CircularProgress';
+import React from "react";
+import styled from "@mui/material/styles/styled";
+import Button, { ButtonProps } from "@mui/material/Button";
+import LinearProgress, {
+  LinearProgressProps,
+} from "@mui/material/LinearProgress";
+import CircularProgress, {
+  CircularProgressProps,
+} from "@mui/material/CircularProgress";
 
-const Wrapper = styled('div')({
-  position: 'relative',
+const Wrapper = styled("div")({
+  position: "relative",
 });
 
 const StyledCircularProgress = styled(CircularProgress)({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
   marginTop: -12,
   marginLeft: -12,
 });
@@ -25,7 +29,6 @@ const StyledLinearProgress = styled(LinearProgress)({
  * Progress button component props
  */
 export interface ProgressButtonProps extends ButtonProps {
-  className?: string;
   isLoading: boolean;
   linearProgressProps?: LinearProgressProps;
   circularProgressProps?: CircularProgressProps;
@@ -36,7 +39,6 @@ export interface ProgressButtonProps extends ButtonProps {
  * Progress button to show some feedback when a process is loading
  */
 const ProgressButton: React.FC<ProgressButtonProps> = ({
-  className,
   isLoading,
   linearProgressProps,
   circularProgressProps,
@@ -51,10 +53,17 @@ const ProgressButton: React.FC<ProgressButtonProps> = ({
         {children}
       </Button>
       {isLoading && !useCircularLoading && (
-        <StyledLinearProgress color={buttonProps.color} {...linearProgressProps} />
+        <StyledLinearProgress
+          color={buttonProps.color}
+          {...linearProgressProps}
+        />
       )}
       {isLoading && useCircularLoading && (
-        <StyledCircularProgress size={24} color={buttonProps.color} {...circularProgressProps} />
+        <StyledCircularProgress
+          size={24}
+          color={buttonProps.color}
+          {...circularProgressProps}
+        />
       )}
     </Wrapper>
   );

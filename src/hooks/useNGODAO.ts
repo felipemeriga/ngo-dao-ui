@@ -80,3 +80,18 @@ export function useCreateProposal() {
     createProposal,
   };
 }
+
+// const provider = new ethers.providers.JsonRpcProvider(
+//   "https://eth-sepolia.g.alchemy.com/v2/d6TNNGOzxR3s4w8iYyWkER1C2R0mTldx",
+// );
+// const contract = NGODAO__factory.connect(
+//   "0xe65920D17678aaC3C51bEbf713F2B0e2bFaa34Fa",
+//   provider,
+// );
+//
+// async function testVotingPeriod() {
+//   const votingPeriod = await contract.votingPeriod();
+//   console.log("Voting Period:", votingPeriod.toString());
+// }
+//
+// testVotingPeriod();
