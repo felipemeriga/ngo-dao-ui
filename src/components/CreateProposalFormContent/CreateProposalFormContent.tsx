@@ -33,6 +33,42 @@ const CreateProposalFormContent: React.FC = () => {
       <FormGroupContent display="flex">
         <InlineField cols={1}>
           <Controller
+            name="title"
+            control={control}
+            rules={{
+              required: { value: true, message: "Title is required" },
+              validate: {
+                isValidDescription: (value) => {
+                  if (value.length < 5) {
+                    return "The title must be at least 5 characters long";
+                  }
+                  return true;
+                },
+              },
+            }}
+            render={({ field, fieldState: { error } }) => {
+              return (
+                <StyledTextField
+                  {...field}
+                  margin="normal"
+                  sx={{ minWidth: 300 }} // ensures at least 300px wide
+                  InputProps={{
+                    style: { fontSize: 18, height: 48 }, // or any size you want
+                  }}
+                  InputLabelProps={{
+                    sx: { fontSize: "1.5rem" }, // Adjust the font size as needed
+                  }}
+                  label="Title"
+                  variant="standard"
+                  placeholder=""
+                  fullWidth
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                />
+              );
+            }}
+          />
+          <Controller
             name="description"
             control={control}
             rules={{
