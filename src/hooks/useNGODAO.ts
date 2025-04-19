@@ -50,12 +50,12 @@ export interface Proposal {
 }
 
 export function useCreateProposal() {
-  const { writeContract, data, error, isPending } = useWriteContract();
-  const {
-    data: receipt,
-    isLoading,
-    isSuccess,
-  } = useWaitForTransactionReceipt({ hash: data });
+  const { data: hash, error, isPending, writeContract } = useWriteContract();
+
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({
+      hash,
+    });
 
   const createProposal = ({ title, description, target, value }: Proposal) => {
     writeContract({
@@ -67,12 +67,11 @@ export function useCreateProposal() {
   };
 
   return {
-    data,
+    hash,
     error,
     isPending,
-    isSuccess,
-    receipt,
-    isLoading,
+    isConfirming,
+    isConfirmed,
     createProposal,
   };
 }

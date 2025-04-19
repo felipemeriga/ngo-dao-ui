@@ -11,6 +11,7 @@ export const useHeaderNavigation = () => {
   const createProposalForm = useCreateProposalForm({
     handleAfterSubmit: () => {
       closeCreateProposalDialog();
+      createProposalForm.reset();
     },
   });
 

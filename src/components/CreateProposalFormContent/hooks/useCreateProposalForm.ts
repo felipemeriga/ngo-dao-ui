@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CreateProposalForm } from "../../../types/formTypes.ts";
 import { useCreateProposal } from "../../../hooks/useNGODAO.ts";
@@ -8,17 +8,32 @@ interface InputProps {
   handleAfterSubmit: () => void;
 }
 
+interface FormResults {
+  isLoading: boolean;
+  hash: string;
+  isConfirmed: boolean;
+  isConfirming: boolean;
+}
+
 export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const {
-    createProposal,
-    data,
-    error,
-    isPending,
-    receipt,
-    isSuccess,
-    isLoading: isLoadingTx,
-  } = useCreateProposal();
+  const { createProposal, isPending, error, hash, isConfirming, isConfirmed } =
+    useCreateProposal();
+
+  useEffect(() => {
+    if (hash && isConfirmed && !isPending) {
+      handleAfterSubmit();
+      setIsLoading(false);
+    }
+
+    if (error) {
+      if (!error.message.includes("User rejected the request")) {
+        console.log(error);
+      }
+      handleAfterSubmit();
+      setIsLoading(false);
+    }
+  }, [hash, error, isPending, isConfirmed]);
 
   const methods = useForm<CreateProposalForm>({
     mode: "onChange", // Ensure validation triggers on input
@@ -46,21 +61,8 @@ export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
       data: formData.data,
     });
 
-    console.log(isPending, isSuccess, isLoadingTx, receipt, error, data);
     // Wait for the proposal submission to complete or an error to occur
     await waitForResult();
-
-    debugger;
-    setIsLoading(false);
-
-    if (error) {
-      console.error("Error creating proposal:", error);
-    } else if (data) {
-      console.log("Proposal created successfully:", data);
-      console.log("Receipt:", receipt);
-    }
-
-    handleAfterSubmit();
   };
 
   return {
@@ -69,6 +71,11 @@ export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
       return methods.handleSubmit((data) => onSubmit(data))();
     },
     reset: () => methods.reset(),
-    isLoading,
+    formResults: {
+      isLoading,
+      hash,
+      isConfirmed,
+      isConfirming,
+    } as FormResults,
   };
 };

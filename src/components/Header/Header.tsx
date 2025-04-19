@@ -100,6 +100,13 @@ const Header: React.FC = () => {
               closeCreateProposalDialog();
             }}
             title={<Typography variant="h4">Create Proposal</Typography>}
+            statusMessage={
+              <>
+                {createProposalForm.formResults.isConfirming && (
+                  <Typography variant="body1">Creating proposal...</Typography>
+                )}
+              </>
+            }
             actions={
               <>
                 <Button
@@ -115,8 +122,8 @@ const Header: React.FC = () => {
 
                 <ProgressButton
                   id="create-multiview-listing-confirm"
-                  isLoading={createProposalForm.isLoading || false}
-                  disabled={createProposalForm.isLoading}
+                  isLoading={createProposalForm.formResults.isLoading || false}
+                  disabled={createProposalForm.formResults.isLoading}
                   onClick={() => {
                     createProposalForm.handleSubmit();
                   }}
