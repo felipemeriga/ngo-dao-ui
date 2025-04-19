@@ -3,6 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { CreateProposalForm } from "../../../types/formTypes.ts";
 import { useCreateProposal } from "../../../hooks/useNGODAO.ts";
 import { weiValue } from "../../../utils/utils.ts";
+import { useAlerts } from "../../../providers/AlertsProvider.tsx";
 
 interface InputProps {
   handleAfterSubmit: () => void;
@@ -17,6 +18,7 @@ interface FormResults {
 
 export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const alerts = useAlerts();
   const { createProposal, isPending, error, hash, isConfirming, isConfirmed } =
     useCreateProposal();
 
@@ -24,6 +26,12 @@ export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
     if (hash && isConfirmed && !isPending) {
       handleAfterSubmit();
       setIsLoading(false);
+      alerts({
+        title: "Success",
+        description: "The proposal was created successfully...",
+        content: `Transaction hash: ${hash}`,
+        type: "Success",
+      });
     }
 
     if (error) {
