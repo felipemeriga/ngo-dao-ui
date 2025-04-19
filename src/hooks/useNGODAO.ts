@@ -42,6 +42,7 @@ export function useDonations() {
 }
 
 export interface Proposal {
+  title: string;
   description: string;
   target: string;
   value: bigint;
@@ -56,17 +57,12 @@ export function useCreateProposal() {
     isSuccess,
   } = useWaitForTransactionReceipt({ hash: data });
 
-  const createProposal = ({ description, target, value, data }: Proposal) => {
+  const createProposal = ({ title, description, target, value }: Proposal) => {
     writeContract({
       abi: NGODAO__factory.abi,
       address: contractConfig.address as `0x${string}`,
       functionName: "createProposal",
-      args: [
-        description,
-        target as `0x${string}`,
-        value,
-        data as `0x${string}`,
-      ],
+      args: [title, description, target as `0x${string}`, value, "0x"],
     });
   };
 
@@ -83,15 +79,55 @@ export function useCreateProposal() {
 
 // const provider = new ethers.providers.JsonRpcProvider(
 //   "https://eth-sepolia.g.alchemy.com/v2/d6TNNGOzxR3s4w8iYyWkER1C2R0mTldx",
-// );
-// const contract = NGODAO__factory.connect(
+// ); // Replace with your provider
+// const signer = provider.getSigner(); // Ensure the wallet is properly funded
+//
+// debugger;
+// const contract = new ethers.Contract(
 //   "0xe65920D17678aaC3C51bEbf713F2B0e2bFaa34Fa",
+//   NGODAO__factory.abi,
+//   signer,
+// );
+//
+// const testTx = async () => {
+//   try {
+//     const tx = await contract.createProposal(
+//       "Proposal Title",
+//       "Proposal Description",
+//       "0x41ff68675f8460C6e08312843DA47E9975Edbfcb",
+//       BigInt(1000),
+//       "",
+//     );
+//     console.log("Transaction submitted: ", tx);
+//   } catch (error: any) {
+//     console.error("Transaction Error:", error);
+//   }
+// };
+// testTx();
+
+// const provider = new ethers.providers.JsonRpcProvider(
+//   "",
+// );
+// // Replace with the private key of the account you want to use for signing:
+// const signer = new ethers.Wallet(
+//   "", // Replace with your private key securely
 //   provider,
 // );
 //
-// async function testVotingPeriod() {
-//   const votingPeriod = await contract.votingPeriod();
-//   console.log("Voting Period:", votingPeriod.toString());
-// }
+// const contract = NGODAO__factory.connect(
+//   "0xe65920D17678aaC3C51bEbf713F2B0e2bFaa34Fa",
+//   signer, // Use the signer instead of the provider
+// );
 //
-// testVotingPeriod();
+// async function testCreatingProposal() {
+//   const contractTransaction = await contract.createProposal(
+//     "Proposal Title",
+//     "Proposal Description",
+//     "0x41ff68675f8460C6e08312843DA47E9975Edbfcb",
+//     BigInt(1000), // Correct BigNumberish
+//     "0x", // Correct replacement for empty data
+//   );
+//   console.log("Contract transaction: ", contractTransaction);
+// }
+
+// testCreatingProposal();
