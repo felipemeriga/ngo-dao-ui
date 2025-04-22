@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, {
   createContext,
   useState,
@@ -37,7 +38,6 @@ export type AlertType = "Error" | "Success";
 
 type AlertFunction = (alert: AlertMessage) => void;
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const alertsContext = createContext<AlertFunction>(null!);
 
 export interface AlertsProviderProps {

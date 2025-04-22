@@ -9,7 +9,7 @@ import { SvgIconProps } from "@mui/material/SvgIcon";
 import { useTheme } from "@mui/system";
 import CardContent from "@mui/material/CardContent";
 
-const StyledSnackbar = styled(Snackbar)(({}) => ({
+const StyledSnackbar = styled(Snackbar)(() => ({
   whiteSpace: "pre-wrap",
   width: "400px",
 }));

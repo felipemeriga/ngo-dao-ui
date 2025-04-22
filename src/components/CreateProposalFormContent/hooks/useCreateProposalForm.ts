@@ -41,7 +41,7 @@ export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
       handleAfterSubmit();
       setIsLoading(false);
     }
-  }, [hash, error, isPending, isConfirmed]);
+  }, [hash, error, isPending, isConfirmed, alerts, handleAfterSubmit]);
 
   const methods = useForm<CreateProposalForm>({
     mode: "onChange", // Ensure validation triggers on input
