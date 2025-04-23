@@ -4,6 +4,7 @@ import {
   useAccount,
   useWaitForTransactionReceipt,
   useWriteContract,
+  usePublicClient,
 } from "wagmi";
 import { NGODAO__factory } from "../types";
 import { CreateProposal } from "../types/types.ts";
@@ -80,6 +81,24 @@ export function useCreateProposal() {
     isConfirmed,
     createProposal,
   };
+}
+
+export function getEtherScanLink(address: string): string | null {
+  const publicClient = usePublicClient();
+  const chainId = publicClient?.chain.id; // Get current chain ID
+
+  // Define EtherScanLink base URLs mapped by chainId
+  const etherScanBaseUrls: { [networkId: number]: string } = {
+    1: "https://etherscan.io", // Ethereum Mainnet
+    137: "https://polygonscan.com", // Polygon Mainnet
+    11155111: "https://sepolia.etherscan.io/", // Sepolia
+    // Add more as needed
+  };
+
+  const baseUrl = chainId ? etherScanBaseUrls[chainId] : null;
+
+  // Return the full EtherScan link if the chain is supported, otherwise null
+  return baseUrl ? `${baseUrl}/address/${address}` : null;
 }
 
 // const provider = new ethers.providers.JsonRpcProvider(

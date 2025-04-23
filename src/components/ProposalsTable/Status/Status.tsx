@@ -17,17 +17,17 @@ const Status: React.FC<StatusProps> = ({ executed, noVotes, yesVotes }) => {
         <>
           {Number(yesVotes) > Number(noVotes) ? (
             <Tooltip title="Executed">
-              <CheckCircleOutlineIcon />
+              <CheckCircleOutlineIcon color={"success"} />
             </Tooltip>
           ) : (
             <Tooltip title="Canceled">
-              <CancelIcon />
+              <CancelIcon color={"error"} />
             </Tooltip>
           )}
         </>
       ) : (
         <Tooltip title="Pending...">
-          <PendingIcon />
+          <PendingIcon color={"info"} />
         </Tooltip>
       )}
     </>

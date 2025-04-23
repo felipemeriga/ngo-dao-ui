@@ -6,15 +6,19 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useProposals } from "../../hooks/useNGODAO.ts";
+import { getEtherScanLink, useProposals } from "../../hooks/useNGODAO.ts";
 import { LoadingContainer } from "../common/Loading/Loading.tsx";
 import CircularProgress from "@mui/material/CircularProgress";
 import { ethValue, formatDeadline } from "../../utils/utils.ts";
 import { Status } from "./Status";
+import EtherScanLink from "../common/EtherScanLink/EtherScanLink.tsx";
 
 const ProposalsTable: React.FC = () => {
   const { data, isLoading, error } = useProposals();
-
+  const etherScanLink = getEtherScanLink(
+    "0x41ff68675f8460C6e08312843DA47E9975Edbfcb",
+  );
+  console.log("etherScanLink: ", etherScanLink);
   return (
     <>
       {isLoading || error ? (
@@ -53,7 +57,12 @@ const ProposalsTable: React.FC = () => {
                       {row.title}
                     </TableCell>
                     <TableCell align="center">{ethValue(row.value)}</TableCell>
-                    <TableCell align="center">{row.target}</TableCell>
+                    <TableCell align="center">
+                      <EtherScanLink
+                        showAddress={true}
+                        walletAddress={row.target}
+                      />
+                    </TableCell>
                     <TableCell align="center">
                       {formatDeadline(row.deadline)}
                     </TableCell>
