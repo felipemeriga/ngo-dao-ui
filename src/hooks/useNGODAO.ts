@@ -14,7 +14,7 @@ const contractConfig = {
   abi: NGODAO__factory.abi,
 };
 
-export function useProposals() {
+export const useProposals = () => {
   return useReadContract({
     address: contractConfig.address as `0x${string}`,
     abi: contractConfig.abi,
@@ -22,7 +22,7 @@ export function useProposals() {
   });
 }
 
-export function useVotingPeriod() {
+export const useVotingPeriod = () => {
   return useReadContract({
     address: contractConfig.address as `0x${string}`,
     abi: NGODAO__factory.abi,
@@ -30,7 +30,7 @@ export function useVotingPeriod() {
   });
 }
 
-export function useTotalDonations() {
+export const useTotalDonations = () => {
   return useReadContract({
     address: contractConfig.address as `0x${string}`,
     abi: NGODAO__factory.abi,
@@ -38,8 +38,7 @@ export function useTotalDonations() {
   });
 }
 
-// Add a new function for the public mapping donations
-export function useDonations() {
+export const useDonations = () => {
   const { address } = useAccount();
   const walletAddress = address || ("" as `0x${string}`); // Use an empty string if
 
@@ -51,7 +50,7 @@ export function useDonations() {
   });
 }
 
-export function useCreateProposal() {
+export const useCreateProposal = ()=> {
   const { data: hash, error, isPending, writeContract } = useWriteContract();
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
@@ -83,7 +82,7 @@ export function useCreateProposal() {
   };
 }
 
-export function useEtherScanLink(address: string): string | null {
+export const useEtherScanLink = (address: string): string | null => {
   const publicClient = usePublicClient();
   const chainId = publicClient?.chain.id; // Get current chain ID
 
