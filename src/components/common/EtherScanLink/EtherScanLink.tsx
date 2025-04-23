@@ -1,5 +1,5 @@
 import React from "react";
-import { getEtherScanLink } from "../../../hooks/useNGODAO.ts";
+import { useEtherScanLink } from "../../../hooks/useNGODAO.ts";
 
 interface EtherScanLinkProps {
   walletAddress: string;
@@ -10,7 +10,7 @@ const EtherScanLink: React.FC<EtherScanLinkProps> = ({
   walletAddress,
   showAddress,
 }) => {
-  const etherScanLink = getEtherScanLink(walletAddress);
+  const etherScanLink = useEtherScanLink(walletAddress);
 
   if (!etherScanLink) {
     return <p>Unsupported network</p>;

@@ -83,7 +83,7 @@ export function useCreateProposal() {
   };
 }
 
-export function getEtherScanLink(address: string): string | null {
+export function useEtherScanLink(address: string): string | null {
   const publicClient = usePublicClient();
   const chainId = publicClient?.chain.id; // Get current chain ID
 
