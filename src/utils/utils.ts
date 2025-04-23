@@ -7,3 +7,14 @@ export const ethValue = (amount: bigint) => {
 export const weiValue = (ethValue: number) => {
   return BigInt(ethValue * Math.pow(10, 18));
 };
+
+export const formatDeadline = (deadline: bigint): string => {
+  // Convert `bigint` to a regular number and multiply by 1000 (to convert seconds to milliseconds)
+  const timestamp = Number(deadline) * 1000;
+
+  // Create a Date object from the timestamp
+  const date = new Date(timestamp);
+
+  // Format the date as a human-readable string
+  return date.toLocaleString(); // Default format based on system locale
+};

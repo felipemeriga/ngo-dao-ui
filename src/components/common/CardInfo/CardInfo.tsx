@@ -3,13 +3,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
-import styled from "@mui/material/styles/styled";
-
-export const LoadingContainer = styled("div")({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-});
+import { LoadingContainer } from "../Loading/Loading";
 
 interface HookInfo {
   isLoading: boolean;

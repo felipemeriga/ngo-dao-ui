@@ -6,11 +6,20 @@ import {
   useWriteContract,
 } from "wagmi";
 import { NGODAO__factory } from "../types";
+import { CreateProposal } from "../types/types.ts";
 
 const contractConfig = {
   address: "0xe65920D17678aaC3C51bEbf713F2B0e2bFaa34Fa",
   abi: NGODAO__factory.abi,
 };
+
+export function useProposals() {
+  return useReadContract({
+    address: contractConfig.address as `0x${string}`,
+    abi: contractConfig.abi,
+    functionName: "getAllProposals",
+  });
+}
 
 export function useVotingPeriod() {
   return useReadContract({
@@ -41,14 +50,6 @@ export function useDonations() {
   });
 }
 
-export interface Proposal {
-  title: string;
-  description: string;
-  target: string;
-  value: bigint;
-  data: string;
-}
-
 export function useCreateProposal() {
   const { data: hash, error, isPending, writeContract } = useWriteContract();
 
@@ -57,7 +58,12 @@ export function useCreateProposal() {
       hash,
     });
 
-  const createProposal = ({ title, description, target, value }: Proposal) => {
+  const createProposal = ({
+    title,
+    description,
+    target,
+    value,
+  }: CreateProposal) => {
     writeContract({
       abi: NGODAO__factory.abi,
       address: contractConfig.address as `0x${string}`,
@@ -77,7 +83,7 @@ export function useCreateProposal() {
 }
 
 // const provider = new ethers.providers.JsonRpcProvider(
-//   "https://eth-sepolia.g.alchemy.com/v2/d6TNNGOzxR3s4w8iYyWkER1C2R0mTldx",
+//   "",
 // ); // Replace with your provider
 // const signer = provider.getSigner(); // Ensure the wallet is properly funded
 //

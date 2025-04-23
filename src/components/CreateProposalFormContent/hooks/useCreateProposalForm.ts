@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { CreateProposalForm } from "../../../types/formTypes.ts";
+import { CreateProposalForm } from "../../../types/types.ts";
 import { useCreateProposal } from "../../../hooks/useNGODAO.ts";
 import { weiValue } from "../../../utils/utils.ts";
 import { useAlerts } from "../../../providers/AlertsProvider.tsx";

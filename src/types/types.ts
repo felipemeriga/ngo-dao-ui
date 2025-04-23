@@ -5,3 +5,11 @@ export interface CreateProposalForm {
   value: number;
   data: string;
 }
+
+export interface CreateProposal {
+  title: string;
+  description: string;
+  target: string;
+  value: bigint;
+  data: string;
+}

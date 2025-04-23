@@ -8,10 +8,15 @@ import {
   useVotingPeriod,
 } from "../../hooks/useNGODAO.ts";
 import { ethValue } from "../../utils/utils.ts";
+import { ProposalsTable } from "../ProposalsTable";
 
-export const ExternalContainer = styled("div")({
+const ExternalContainer = styled("div")({
   padding: "100px 100px 100px 100px",
   width: "100%",
+});
+
+const TableContainer = styled("div")({
+  marginTop: "100px",
 });
 
 const convertDays = (data: bigint | undefined) => {
@@ -57,6 +62,10 @@ const Dashboard: React.FC = () => {
           convertData={convertETH}
         />
       </Box>
+
+      <TableContainer>
+        <ProposalsTable />
+      </TableContainer>
     </ExternalContainer>
   );
 };

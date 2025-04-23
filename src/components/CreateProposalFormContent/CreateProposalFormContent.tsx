@@ -6,7 +6,7 @@ import {
   StyledTextField,
 } from "../common/Form/styles";
 import { Controller, useFormContext } from "react-hook-form";
-import { CreateProposalForm } from "../../types/formTypes";
+import { CreateProposalForm } from "../../types/types.ts";
 import { useAccount, useBalance } from "wagmi";
 import { isAddress } from "@ethersproject/address";
 
