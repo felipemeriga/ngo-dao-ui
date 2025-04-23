@@ -7,17 +7,12 @@ import {
 } from "../common/Form/styles";
 import { Controller, useFormContext } from "react-hook-form";
 import { CreateProposalForm } from "../../types/types.ts";
-import { useAccount, useBalance } from "wagmi";
 import { isAddress } from "@ethersproject/address";
+import { useTotalDonations } from "../../hooks/useNGODAO.ts";
+import { ethValue } from "../../utils/utils.ts";
 
 const CreateProposalFormContent: React.FC = () => {
-  // Get the connected account
-  const { address } = useAccount();
-
-  // Use `useBalance` to fetch the ETH balance of the connected wallet
-  const { data } = useBalance({
-    address, // The wallet address to fetch the balance for
-  });
+  const { data } = useTotalDonations();
 
   const { control } = useFormContext<CreateProposalForm>();
 
@@ -154,10 +149,10 @@ const CreateProposalFormContent: React.FC = () => {
                   console.log("Validation triggered with value:", value); // Log every validation
                   console.log(data);
                   if (!data) {
-                    return "Unable to fetch wallet balance";
+                    return "Unable to fetch NGO balance";
                   }
-                  if (value > Number(data?.formatted)) {
-                    return `Entered value cannot exceed wallet balance: ${parseFloat(Number(data?.formatted).toFixed(4))}`;
+                  if (value > Number(ethValue(data))) {
+                    return `Entered value cannot exceed NGO balance: ${parseFloat(ethValue(data).toFixed(4))}`;
                   }
                   if (value <= 0) {
                     return `Value needs to be greater than 0`;

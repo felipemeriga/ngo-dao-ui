@@ -6,17 +6,21 @@ import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { config } from "./config.ts";
 import { AlertsProvider } from "./providers/AlertsProvider.tsx";
+import { ThemeProvider } from "@mui/material";
+import { theme } from "./theme/theme.ts";
 
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <AlertsProvider>
-      <WagmiProvider config={config}>
-        <QueryClientProvider client={queryClient}>
-          <App />
-        </QueryClientProvider>
-      </WagmiProvider>
-    </AlertsProvider>
+    <ThemeProvider theme={theme}>
+      <AlertsProvider>
+        <WagmiProvider config={config}>
+          <QueryClientProvider client={queryClient}>
+            <App />
+          </QueryClientProvider>
+        </WagmiProvider>
+      </AlertsProvider>
+    </ThemeProvider>
   </React.StrictMode>,
 );

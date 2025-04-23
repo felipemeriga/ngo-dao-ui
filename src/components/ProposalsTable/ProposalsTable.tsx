@@ -46,8 +46,24 @@ const ProposalsTable: React.FC = () => {
               {data &&
                 data.map((row) => (
                   <TableRow
+                    onClick={(event) => {
+                      console.log(event);
+                    }}
+                    // onMouseOver={(e) =>
+                    //   (e.currentTarget.style.backgroundColor =
+                    //     "rgb(228,228,197)")
+                    // }
+                    // onMouseOut={(e) =>
+                    //   (e.currentTarget.style.backgroundColor = "")
+                    // }
                     key={row.title}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    sx={{
+                      "&:last-child td, &:last-child th": { border: 0 },
+                      "&:hover": {
+                        backgroundColor: "rgb(228,228,197)", // Or any color you prefer
+                        cursor: "pointer", // Add this if you want to show pointer on hover
+                      },
+                    }}
                   >
                     <TableCell component="th" scope="row">
                       {row.title}
