@@ -3,9 +3,10 @@ import { FormGroupContent, FormWrapper } from "../common/Form/styles.tsx";
 import { Proposal } from "../../types/types.ts";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { ethValue, formatDeadline } from "../../utils/utils.ts";
+import { ethValue } from "../../utils/utils.ts";
 import EtherScanLink from "../common/EtherScanLink/EtherScanLink.tsx";
 import { Status } from "../ProposalsTable/Status";
+import { Deadline } from "../common/Deadline";
 
 export interface ProposalProps {
   proposal: Proposal | null;
@@ -56,7 +57,7 @@ const ProposalInfo: React.FC<ProposalProps> = ({ proposal }) => {
             >
               <div>
                 <h2>Deadline</h2>
-                <Typography>{formatDeadline(proposal.deadline)}</Typography>
+                <Deadline deadline={proposal.deadline} />
               </div>
               <div>
                 <h2>Status</h2>

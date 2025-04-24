@@ -18,6 +18,7 @@ import { Dialog } from "../common/Dialog";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { ProposalInfo } from "../ProposalInfo";
+import { Deadline } from "../common/Deadline";
 export const StyledTableRow = styled(TableRow)(() => ({
   "&:last-child td, &:last-child th": { border: 0 },
   "&:hover": {
@@ -86,7 +87,7 @@ const ProposalsTable: React.FC = () => {
                         />
                       </TableCell>
                       <TableCell align="center">
-                        {formatDeadline(row.deadline)}
+                        <Deadline deadline={row.deadline} />
                       </TableCell>
                       <TableCell align="center">
                         {Number(row.yesVotes)}

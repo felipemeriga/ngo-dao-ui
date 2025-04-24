@@ -20,7 +20,7 @@ export const useProposals = () => {
     abi: contractConfig.abi,
     functionName: "getAllProposals",
   });
-}
+};
 
 export const useVotingPeriod = () => {
   return useReadContract({
@@ -28,7 +28,7 @@ export const useVotingPeriod = () => {
     abi: NGODAO__factory.abi,
     functionName: "votingPeriod",
   });
-}
+};
 
 export const useTotalDonations = () => {
   return useReadContract({
@@ -36,7 +36,7 @@ export const useTotalDonations = () => {
     abi: NGODAO__factory.abi,
     functionName: "totalDonations",
   });
-}
+};
 
 export const useDonations = () => {
   const { address } = useAccount();
@@ -48,9 +48,26 @@ export const useDonations = () => {
     functionName: "donations",
     args: [walletAddress], // Pass the donor address to the mapping
   });
-}
+};
 
-export const useCreateProposal = ()=> {
+export const useVoted = (proposalId: number | bigint | undefined) => {
+  const { address } = useAccount();
+  const voterAddress = address || ("" as `0x${string}`);
+
+  // Only call `useReadContract` if both `proposalId` and `voterAddress` are ready
+  const shouldFetch = proposalId !== undefined && voterAddress !== "";
+
+  return shouldFetch
+    ? useReadContract({
+        address: contractConfig.address as `0x${string}`,
+        abi: NGODAO__factory.abi,
+        functionName: "voted",
+        args: [BigInt(proposalId!), voterAddress], // Use BigInt for the proposalId
+      })
+    : { data: undefined, isLoading: false, error: undefined }; // Return a default object when `shouldFetch` is false
+};
+
+export const useCreateProposal = () => {
   const { data: hash, error, isPending, writeContract } = useWriteContract();
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
@@ -80,7 +97,7 @@ export const useCreateProposal = ()=> {
     isConfirmed,
     createProposal,
   };
-}
+};
 
 export const useEtherScanLink = (address: string): string | null => {
   const publicClient = usePublicClient();
@@ -98,7 +115,7 @@ export const useEtherScanLink = (address: string): string | null => {
 
   // Return the full EtherScan link if the chain is supported, otherwise null
   return baseUrl ? `${baseUrl}/address/${address}` : null;
-}
+};
 
 // const provider = new ethers.providers.JsonRpcProvider(
 //   "",
