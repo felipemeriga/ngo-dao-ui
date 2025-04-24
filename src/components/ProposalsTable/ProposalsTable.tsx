@@ -13,7 +13,11 @@ import { Status } from "./Status";
 import EtherScanLink from "../common/EtherScanLink/EtherScanLink.tsx";
 import styled from "@mui/material/styles/styled";
 import { useProposalsContext } from "../../providers/ProposalsProvider.tsx";
-
+import { useProposalInfo } from "../ProposalInfo/hooks/useProposalInfo.ts";
+import { Dialog } from "../common/Dialog";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import { ProposalInfo } from "../ProposalInfo";
 export const StyledTableRow = styled(TableRow)(() => ({
   "&:last-child td, &:last-child th": { border: 0 },
   "&:hover": {
@@ -30,6 +34,14 @@ export const StyledTable = styled(Table)(() => ({
 
 const ProposalsTable: React.FC = () => {
   const { isLoading, error, data } = useProposalsContext();
+  const {
+    proposal,
+    closeProposalInfoDialog,
+    setSelectedProposal,
+    isProposalInfoDialogOpened,
+    openProposalInfolDialog,
+  } = useProposalInfo();
+
   return (
     <>
       {isLoading || error ? (
@@ -37,55 +49,117 @@ const ProposalsTable: React.FC = () => {
           <CircularProgress />
         </LoadingContainer>
       ) : (
-        <TableContainer component={Paper}>
-          <StyledTable aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Title</TableCell>
-                <TableCell align="center">Value&nbsp;(ETH)</TableCell>
-                <TableCell align="center">Target</TableCell>
-                <TableCell align="center">Deadline</TableCell>
-                <TableCell align="center">Yes Votes</TableCell>
-                <TableCell align="center">No Votes</TableCell>
-                <TableCell align="center">Status</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data &&
-                data.map((row) => (
-                  <StyledTableRow
-                    onClick={(event) => {
-                      console.log(event);
+        <>
+          <TableContainer component={Paper}>
+            <StyledTable aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Title</TableCell>
+                  <TableCell align="center">Value&nbsp;(ETH)</TableCell>
+                  <TableCell align="center">Target</TableCell>
+                  <TableCell align="center">Deadline</TableCell>
+                  <TableCell align="center">Yes Votes</TableCell>
+                  <TableCell align="center">No Votes</TableCell>
+                  <TableCell align="center">Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data &&
+                  data.map((row) => (
+                    <StyledTableRow
+                      onClick={() => {
+                        setSelectedProposal(row);
+                        openProposalInfolDialog();
+                      }}
+                      key={row.title}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.title}
+                      </TableCell>
+                      <TableCell align="center">
+                        {ethValue(row.value)}
+                      </TableCell>
+                      <TableCell align="center">
+                        <EtherScanLink
+                          showAddress={true}
+                          walletAddress={row.target}
+                        />
+                      </TableCell>
+                      <TableCell align="center">
+                        {formatDeadline(row.deadline)}
+                      </TableCell>
+                      <TableCell align="center">
+                        {Number(row.yesVotes)}
+                      </TableCell>
+                      <TableCell align="center">
+                        {Number(row.noVotes)}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Status
+                          noVotes={Number(row.noVotes)}
+                          yesVotes={Number(row.yesVotes)}
+                          executed={row.executed}
+                        />
+                      </TableCell>
+                    </StyledTableRow>
+                  ))}
+              </TableBody>
+            </StyledTable>
+          </TableContainer>
+          {isProposalInfoDialogOpened && (
+            <Dialog
+              open={isProposalInfoDialogOpened}
+              fullWidth
+              maxWidth="xl"
+              onClose={() => {
+                closeProposalInfoDialog();
+              }}
+              title={<Typography variant="h4">{proposal?.title}</Typography>}
+              // statusMessage={
+              //   <>
+              //     {createProposalForm.formResults.isConfirming && (
+              //       <Typography variant="body1">
+              //         Creating proposal...
+              //       </Typography>
+              //     )}
+              //   </>
+              // }
+              actions={
+                <>
+                  <Button
+                    id="proposal-info-cancel"
+                    onClick={() => {
+                      closeProposalInfoDialog();
                     }}
-                    key={row.title}
+                    variant="text"
+                    color="inherit"
                   >
-                    <TableCell component="th" scope="row">
-                      {row.title}
-                    </TableCell>
-                    <TableCell align="center">{ethValue(row.value)}</TableCell>
-                    <TableCell align="center">
-                      <EtherScanLink
-                        showAddress={true}
-                        walletAddress={row.target}
-                      />
-                    </TableCell>
-                    <TableCell align="center">
-                      {formatDeadline(row.deadline)}
-                    </TableCell>
-                    <TableCell align="center">{Number(row.yesVotes)}</TableCell>
-                    <TableCell align="center">{Number(row.noVotes)}</TableCell>
-                    <TableCell align="center">
-                      <Status
-                        noVotes={Number(row.noVotes)}
-                        yesVotes={Number(row.yesVotes)}
-                        executed={row.executed}
-                      />
-                    </TableCell>
-                  </StyledTableRow>
-                ))}
-            </TableBody>
-          </StyledTable>
-        </TableContainer>
+                    Cancel
+                  </Button>
+
+                  {/*<ProgressButton*/}
+                  {/*  id="create-multiview-listing-confirm"*/}
+                  {/*  isLoading={*/}
+                  {/*    createProposalForm.formResults.isLoading || false*/}
+                  {/*  }*/}
+                  {/*  disabled={createProposalForm.formResults.isLoading}*/}
+                  {/*  onClick={() => {*/}
+                  {/*    createProposalForm.handleSubmit();*/}
+                  {/*  }}*/}
+                  {/*  variant="contained"*/}
+                  {/*  color="primary"*/}
+                  {/*>*/}
+                  {/*  Create*/}
+                  {/*</ProgressButton>*/}
+                </>
+              }
+            >
+              <form>
+                <ProposalInfo proposal={proposal} />
+              </form>
+            </Dialog>
+          )}
+        </>
       )}
     </>
   );

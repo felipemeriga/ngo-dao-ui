@@ -39,7 +39,6 @@ const Header: React.FC = () => {
 
   const handleCreateProposal = () => {
     // Your logic for creating a proposal goes here.
-    console.log("Create Proposal clicked");
     if (!isCreateProposalDialogOpened) {
       openCreateProposalDialog();
     }

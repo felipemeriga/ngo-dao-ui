@@ -16,13 +16,6 @@ const CreateProposalFormContent: React.FC = () => {
 
   const { control } = useFormContext<CreateProposalForm>();
 
-  // // Trigger validation when wallet balance updates
-  // useEffect(() => {
-  //   if (data?.value) {
-  //     trigger("value"); // Force revalidate "value" field
-  //   }
-  // }, [data?.value, trigger]);
-
   return (
     <FormWrapper>
       <FormGroupContent display="flex">
@@ -146,8 +139,6 @@ const CreateProposalFormContent: React.FC = () => {
               required: { value: true, message: "Amount is required" },
               validate: {
                 isValueValid: (value) => {
-                  console.log("Validation triggered with value:", value); // Log every validation
-                  console.log(data);
                   if (!data) {
                     return "Unable to fetch NGO balance";
                   }
