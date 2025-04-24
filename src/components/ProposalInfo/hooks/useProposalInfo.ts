@@ -5,7 +5,7 @@ import { Proposal } from "../../../types/types.ts";
 export const useProposalInfo = () => {
   const [proposal, setSelectedProposal] = useState<Proposal | null>(null);
 
-  const submitVote = (approve: boolean) => {};
+  // const submitVote = (approve: boolean) => {};
 
   const [
     isProposalInfoDialogOpened,

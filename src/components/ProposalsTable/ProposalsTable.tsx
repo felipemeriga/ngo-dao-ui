@@ -84,6 +84,7 @@ const ProposalsTable: React.FC = () => {
                         <EtherScanLink
                           showAddress={true}
                           walletAddress={row.target}
+                          isTransaction={false}
                         />
                       </TableCell>
                       <TableCell align="center">

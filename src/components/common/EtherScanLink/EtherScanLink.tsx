@@ -12,13 +12,15 @@ export const Link = styled("a")({
 interface EtherScanLinkProps {
   walletAddress: string;
   showAddress: boolean;
+  isTransaction: boolean;
 }
 
 const EtherScanLink: React.FC<EtherScanLinkProps> = ({
   walletAddress,
   showAddress,
+  isTransaction,
 }) => {
-  const etherScanLink = useEtherScanLink(walletAddress);
+  const etherScanLink = useEtherScanLink(walletAddress, isTransaction);
 
   if (!etherScanLink) {
     return <p>Unsupported network</p>;

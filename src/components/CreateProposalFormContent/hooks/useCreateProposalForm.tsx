@@ -4,6 +4,9 @@ import { CreateProposalForm } from "../../../types/types.ts";
 import { useCreateProposal } from "../../../hooks/useNGODAO.ts";
 import { weiValue } from "../../../utils/utils.ts";
 import { useAlerts } from "../../../providers/AlertsProvider.tsx";
+import EtherScanLink from "../../common/EtherScanLink/EtherScanLink.tsx";
+import { config } from "../../../config.ts";
+import { WagmiProvider } from "wagmi";
 
 interface InputProps {
   handleAfterSubmit: () => void;
@@ -38,7 +41,15 @@ export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
       alerts({
         title: "Success",
         description: "The proposal was created successfully...",
-        content: `Transaction hash: ${hash}`,
+        content: (
+          <WagmiProvider config={config}>
+            <EtherScanLink
+              showAddress={false}
+              walletAddress={hash as string}
+              isTransaction={true}
+            />
+          </WagmiProvider>
+        ),
         type: "Success",
       });
     }

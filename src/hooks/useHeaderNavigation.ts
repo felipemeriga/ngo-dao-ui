@@ -1,5 +1,5 @@
 import { useDialog } from "./useDialog.ts";
-import { useCreateProposalForm } from "../components/CreateProposalFormContent/hooks/useCreateProposalForm.ts";
+import { useCreateProposalForm } from "../components/CreateProposalFormContent/hooks/useCreateProposalForm.tsx";
 import { useProposalsContext } from "../providers/ProposalsProvider.tsx";
 import { useCallback } from "react";
 

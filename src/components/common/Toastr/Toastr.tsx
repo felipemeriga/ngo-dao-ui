@@ -1,4 +1,4 @@
-import { FunctionComponent, ElementType } from "react";
+import React, { FunctionComponent, ElementType } from "react";
 import styled from "@mui/material/styles/styled";
 import Snackbar, { SnackbarProps } from "@mui/material/Snackbar";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -30,7 +30,7 @@ const StyledCardHeader = styled(CardHeader)(() => ({
 }));
 
 const StyledCardContent = styled(CardContent)(() => ({
-  alignItems: "flex-start",
+  alignItems: "center",
 }));
 
 const StyledCardActions = styled(CardActions)(() => ({
@@ -40,7 +40,7 @@ const StyledCardActions = styled(CardActions)(() => ({
 export interface ToastrProps {
   title: string;
   description: string;
-  content?: string;
+  content?: React.ReactNode;
   Icon?: ElementType<SvgIconProps>;
   open?: boolean;
   onClose?: SnackbarProps["onClose"];

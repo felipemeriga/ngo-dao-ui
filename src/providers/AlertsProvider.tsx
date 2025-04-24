@@ -16,7 +16,7 @@ import Toastr from "../components/common/Toastr/Toastr";
 export interface AlertMessage {
   title: string;
   description: string;
-  content?: string;
+  content?: React.ReactNode;
   type: AlertType;
   timeout?: number;
 }
