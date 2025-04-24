@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CreateProposalForm } from "../../../types/types.ts";
 import { useCreateProposal } from "../../../hooks/useNGODAO.ts";
@@ -21,11 +21,20 @@ export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
   const alerts = useAlerts();
   const { createProposal, isPending, error, hash, isConfirming, isConfirmed } =
     useCreateProposal();
+  const methods = useForm<CreateProposalForm>({
+    mode: "onChange", // Ensure validation triggers on input
+    defaultValues: { value: 0, target: "", title: "", description: "" },
+  });
+
+  // Block `handleAfterSubmit` from being called multiple times
+  const hasHandledSubmit = useRef(false);
 
   useEffect(() => {
-    if (hash && isConfirmed && !isPending) {
-      handleAfterSubmit();
+    if (hash && isConfirmed && !isPending && !hasHandledSubmit.current) {
+      hasHandledSubmit.current = true;
+      handleAfterSubmit(); // Ensure it only gets executed once
       setIsLoading(false);
+      methods.reset();
       alerts({
         title: "Success",
         description: "The proposal was created successfully...",
@@ -34,19 +43,15 @@ export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
       });
     }
 
-    if (error) {
+    if (error && !hasHandledSubmit.current) {
+      hasHandledSubmit.current = true;
       if (!error.message.includes("User rejected the request")) {
         console.log(error);
       }
-      handleAfterSubmit();
+      handleAfterSubmit(); // Ensure it only gets executed once
       setIsLoading(false);
     }
-  }, [hash, error, isPending, isConfirmed, alerts]);
-
-  const methods = useForm<CreateProposalForm>({
-    mode: "onChange", // Ensure validation triggers on input
-    defaultValues: { value: 0, target: "", title: "" },
-  });
+  }, [hash, error, isPending, isConfirmed, alerts, handleAfterSubmit, methods]);
 
   async function waitForResult(): Promise<void> {
     return new Promise((resolve) => {
@@ -59,6 +64,7 @@ export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
 
   const onSubmit: SubmitHandler<CreateProposalForm> = async (formData) => {
     setIsLoading(true);
+    hasHandledSubmit.current = false; // Reset before execution
     const wei = weiValue(formData.value);
 
     createProposal({

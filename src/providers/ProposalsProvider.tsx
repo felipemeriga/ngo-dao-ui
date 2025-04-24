@@ -1,11 +1,13 @@
-import React, { createContext, useContext } from "react";
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useCallback, useContext } from "react";
 import { Proposal } from "../types/types.ts";
 import { useProposals } from "../hooks/useNGODAO.ts";
+import { ReadContractErrorType } from "viem";
 
 interface ProposalsContextProps {
   data: readonly Proposal[] | undefined; // Array of proposals or undefined
   isLoading: boolean;
-  error: any;
+  error: ReadContractErrorType | null;
   handleRefetch: () => void;
 }
 
@@ -20,10 +22,11 @@ export const ProposalsProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { data, isLoading, error, refetch } = useProposals();
 
-  const handleRefetch = async () => {
+  // Wrap handleRefetch in useCallback to prevent unnecessary re-creations
+  const handleRefetch = useCallback(async () => {
     const response = await refetch();
     console.log("Refetched data:", response);
-  };
+  }, [refetch]);
 
   return (
     <ProposalsContext.Provider
