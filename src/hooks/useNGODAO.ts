@@ -10,7 +10,7 @@ import { NGODAO__factory } from "../types";
 import { CreateProposal } from "../types/types.ts";
 
 const contractConfig = {
-  address: "0xe65920D17678aaC3C51bEbf713F2B0e2bFaa34Fa",
+  address: "0xe53f2315Ae1fbFd91250de7199b21AF4F0b968A2",
   abi: NGODAO__factory.abi,
 };
 

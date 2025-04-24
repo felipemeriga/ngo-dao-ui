@@ -15,6 +15,7 @@ export interface CreateProposal {
 }
 
 export interface Proposal {
+  id: bigint;
   title: string;
   description: string;
   target: `0x${string}`; // Ethereum address

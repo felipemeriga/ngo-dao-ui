@@ -8,7 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { LoadingContainer } from "../common/Loading/Loading.tsx";
 import CircularProgress from "@mui/material/CircularProgress";
-import { ethValue, formatDeadline } from "../../utils/utils.ts";
+import { ethValue } from "../../utils/utils.ts";
 import { Status } from "./Status";
 import EtherScanLink from "../common/EtherScanLink/EtherScanLink.tsx";
 import styled from "@mui/material/styles/styled";
