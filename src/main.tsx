@@ -8,6 +8,7 @@ import { config } from "./config.ts";
 import { AlertsProvider } from "./providers/AlertsProvider.tsx";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./theme/theme.ts";
+import { ProposalsProvider } from "./providers/ProposalsProvider.tsx";
 
 const queryClient = new QueryClient();
 
@@ -17,7 +18,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <AlertsProvider>
         <WagmiProvider config={config}>
           <QueryClientProvider client={queryClient}>
-            <App />
+            <ProposalsProvider>
+              <App />
+            </ProposalsProvider>
           </QueryClientProvider>
         </WagmiProvider>
       </AlertsProvider>

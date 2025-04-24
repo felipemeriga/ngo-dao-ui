@@ -33,7 +33,7 @@ const CreateProposalFormContent: React.FC = () => {
             rules={{
               required: { value: true, message: "Title is required" },
               validate: {
-                isValidDescription: (value) => {
+                isValidTitle: (value) => {
                   if (value.length < 5) {
                     return "The title must be at least 5 characters long";
                   }

@@ -13,3 +13,15 @@ export interface CreateProposal {
   value: bigint;
   data: string;
 }
+
+export interface Proposal {
+  title: string;
+  description: string;
+  target: `0x${string}`; // Ethereum address
+  value: bigint;
+  data: `0x${string}`; // Hexadecimal data
+  deadline: bigint;
+  yesVotes: bigint;
+  noVotes: bigint;
+  executed: boolean;
+}

@@ -1,7 +1,10 @@
 import { useDialog } from "./useDialog.ts";
 import { useCreateProposalForm } from "../components/CreateProposalFormContent/hooks/useCreateProposalForm.ts";
+import { useProposalsContext } from "../providers/ProposalsProvider.tsx";
 
 export const useHeaderNavigation = () => {
+  const { handleRefetch } = useProposalsContext();
+
   const [
     isCreateProposalDialogOpened,
     openCreateProposalDialog,
@@ -12,6 +15,7 @@ export const useHeaderNavigation = () => {
     handleAfterSubmit: () => {
       closeCreateProposalDialog();
       createProposalForm.reset();
+      handleRefetch();
     },
   });
 

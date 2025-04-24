@@ -41,11 +41,11 @@ export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
       handleAfterSubmit();
       setIsLoading(false);
     }
-  }, [hash, error, isPending, isConfirmed, alerts, handleAfterSubmit]);
+  }, [hash, error, isPending, isConfirmed, alerts]);
 
   const methods = useForm<CreateProposalForm>({
     mode: "onChange", // Ensure validation triggers on input
-    defaultValues: { value: 0, target: "" },
+    defaultValues: { value: 0, target: "", title: "" },
   });
 
   async function waitForResult(): Promise<void> {

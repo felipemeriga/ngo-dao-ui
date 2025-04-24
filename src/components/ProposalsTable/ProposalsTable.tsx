@@ -6,15 +6,30 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useProposals } from "../../hooks/useNGODAO.ts";
 import { LoadingContainer } from "../common/Loading/Loading.tsx";
 import CircularProgress from "@mui/material/CircularProgress";
 import { ethValue, formatDeadline } from "../../utils/utils.ts";
 import { Status } from "./Status";
 import EtherScanLink from "../common/EtherScanLink/EtherScanLink.tsx";
+import styled from "@mui/material/styles/styled";
+import { useProposalsContext } from "../../providers/ProposalsProvider.tsx";
+
+export const StyledTableRow = styled(TableRow)(() => ({
+  "&:last-child td, &:last-child th": { border: 0 },
+  "&:hover": {
+    backgroundColor: "rgb(228,228,197)", // Or any color you prefer
+    cursor: "pointer", // Add this if you want to show pointer on hover
+  },
+}));
+
+export const StyledTable = styled(Table)(() => ({
+  minWidth: 650,
+  "& .MuiTableCell-root": { fontSize: "1.2rem" }, // Increase font size for all table cells
+  "& .MuiTableHead-root .MuiTableCell-root": { fontWeight: "bold" }, // Make headers bold
+}));
 
 const ProposalsTable: React.FC = () => {
-  const { data, isLoading, error } = useProposals();
+  const { isLoading, error, data } = useProposalsContext();
   return (
     <>
       {isLoading || error ? (
@@ -23,14 +38,7 @@ const ProposalsTable: React.FC = () => {
         </LoadingContainer>
       ) : (
         <TableContainer component={Paper}>
-          <Table
-            sx={{
-              minWidth: 650,
-              "& .MuiTableCell-root": { fontSize: "1.2rem" }, // Increase font size for all table cells
-              "& .MuiTableHead-root .MuiTableCell-root": { fontWeight: "bold" }, // Make headers bold
-            }}
-            aria-label="simple table"
-          >
+          <StyledTable aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>Title</TableCell>
@@ -45,25 +53,11 @@ const ProposalsTable: React.FC = () => {
             <TableBody>
               {data &&
                 data.map((row) => (
-                  <TableRow
+                  <StyledTableRow
                     onClick={(event) => {
                       console.log(event);
                     }}
-                    // onMouseOver={(e) =>
-                    //   (e.currentTarget.style.backgroundColor =
-                    //     "rgb(228,228,197)")
-                    // }
-                    // onMouseOut={(e) =>
-                    //   (e.currentTarget.style.backgroundColor = "")
-                    // }
                     key={row.title}
-                    sx={{
-                      "&:last-child td, &:last-child th": { border: 0 },
-                      "&:hover": {
-                        backgroundColor: "rgb(228,228,197)", // Or any color you prefer
-                        cursor: "pointer", // Add this if you want to show pointer on hover
-                      },
-                    }}
                   >
                     <TableCell component="th" scope="row">
                       {row.title}
@@ -87,10 +81,10 @@ const ProposalsTable: React.FC = () => {
                         executed={row.executed}
                       />
                     </TableCell>
-                  </TableRow>
+                  </StyledTableRow>
                 ))}
             </TableBody>
-          </Table>
+          </StyledTable>
         </TableContainer>
       )}
     </>
