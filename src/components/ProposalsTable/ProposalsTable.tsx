@@ -8,7 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { LoadingContainer } from "../common/Loading/Loading.tsx";
 import CircularProgress from "@mui/material/CircularProgress";
-import { ethValue } from "../../utils/utils.ts";
+import { ethValue, isInTheFuture } from "../../utils/utils.ts";
 import { Status } from "./Status";
 import EtherScanLink from "../common/EtherScanLink/EtherScanLink.tsx";
 import styled from "@mui/material/styles/styled";
@@ -19,6 +19,8 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { ProposalInfo } from "../ProposalInfo";
 import { Deadline } from "../common/Deadline";
+import { Proposal } from "../../types/types.ts";
+import { ProgressButton } from "../common/ProgressButton";
 export const StyledTableRow = styled(TableRow)(() => ({
   "&:last-child td, &:last-child th": { border: 0 },
   "&:hover": {
@@ -40,8 +42,16 @@ const ProposalsTable: React.FC = () => {
     closeProposalInfoDialog,
     setSelectedProposal,
     isProposalInfoDialogOpened,
-    openProposalInfolDialog,
+    openProposalInfoDialog,
+    hasVoted,
+    isVotedLoading,
   } = useProposalInfo();
+
+  // Example of click handler logic for proposals
+  const handleRowClick = (row: Proposal) => {
+    setSelectedProposal(row); // Sets the selected proposal in context
+    openProposalInfoDialog();
+  };
 
   return (
     <>
@@ -68,10 +78,7 @@ const ProposalsTable: React.FC = () => {
                 {data &&
                   data.map((row) => (
                     <StyledTableRow
-                      onClick={() => {
-                        setSelectedProposal(row);
-                        openProposalInfolDialog();
-                      }}
+                      onClick={() => handleRowClick(row)}
                       key={row.title}
                     >
                       <TableCell component="th" scope="row">
@@ -128,6 +135,30 @@ const ProposalsTable: React.FC = () => {
               // }
               actions={
                 <>
+                  <ProgressButton
+                    id="create-multiview-listing-confirm"
+                    isLoading={isVotedLoading}
+                    disabled={!isInTheFuture(proposal?.deadline) || hasVoted}
+                    onClick={() => {
+                      // createProposalForm.handleSubmit();
+                    }}
+                    variant="contained"
+                    color="primary"
+                  >
+                    Approve
+                  </ProgressButton>
+                  <ProgressButton
+                    id="create-multiview-listing-confirm"
+                    isLoading={isVotedLoading}
+                    disabled={!isInTheFuture(proposal?.deadline) || hasVoted}
+                    onClick={() => {
+                      // createProposalForm.handleSubmit();
+                    }}
+                    variant="contained"
+                    color="error"
+                  >
+                    Disapprove
+                  </ProgressButton>
                   <Button
                     id="proposal-info-cancel"
                     onClick={() => {
@@ -138,21 +169,6 @@ const ProposalsTable: React.FC = () => {
                   >
                     Cancel
                   </Button>
-
-                  {/*<ProgressButton*/}
-                  {/*  id="create-multiview-listing-confirm"*/}
-                  {/*  isLoading={*/}
-                  {/*    createProposalForm.formResults.isLoading || false*/}
-                  {/*  }*/}
-                  {/*  disabled={createProposalForm.formResults.isLoading}*/}
-                  {/*  onClick={() => {*/}
-                  {/*    createProposalForm.handleSubmit();*/}
-                  {/*  }}*/}
-                  {/*  variant="contained"*/}
-                  {/*  color="primary"*/}
-                  {/*>*/}
-                  {/*  Create*/}
-                  {/*</ProgressButton>*/}
                 </>
               }
             >

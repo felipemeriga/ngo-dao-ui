@@ -51,20 +51,26 @@ export const useDonations = () => {
 };
 
 export const useVoted = (proposalId: bigint | null) => {
-  const { address } = useAccount();
+  const { address } = useAccount(); // The voter's wallet/account
   const voterAddress = address || ("" as `0x${string}`);
 
-  // Only call `useReadContract` if both `proposalId` and `voterAddress` are ready
-  const shouldFetch = proposalId !== undefined;
+  // Provide stable fallback arguments
+  const safeProposalId = proposalId ?? BigInt(0); // Use `BigInt(0)` when proposalId is invalid
+  const shouldFetch = proposalId !== null;
 
-  return shouldFetch
-    ? useReadContract({
-        address: contractConfig.address as `0x${string}`,
-        abi: NGODAO__factory.abi,
-        functionName: "voted",
-        args: [BigInt(proposalId!), voterAddress], // Use BigInt for the proposalId
-      })
-    : { data: undefined, isLoading: false, error: undefined }; // Return a default object when `shouldFetch` is false
+  // Always call the hook, but use valid placeholder arguments
+  const result = useReadContract({
+    address: contractConfig.address as `0x${string}`,
+    abi: contractConfig.abi,
+    functionName: "voted",
+    args: [safeProposalId, voterAddress], // Stable arguments for invalid/placeholder IDs
+  });
+
+  // Return additional state indicating whether fetch should have occurred
+  return {
+    ...result,
+    shouldFetch,
+  };
 };
 
 export const useCreateProposal = () => {

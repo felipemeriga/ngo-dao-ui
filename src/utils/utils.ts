@@ -18,3 +18,8 @@ export const formatDeadline = (deadline: bigint): string => {
   // Format the date as a human-readable string
   return date.toLocaleString(); // Default format based on system locale
 };
+
+export const isInTheFuture = (deadline: bigint | undefined) => {
+  const timestamp = Number(deadline) * 1000; // Convert seconds to milliseconds
+  return timestamp > Date.now(); // Check if the deadline is in the future
+};
