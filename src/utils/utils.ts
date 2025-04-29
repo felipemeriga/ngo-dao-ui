@@ -23,3 +23,12 @@ export const isInTheFuture = (deadline: bigint | undefined) => {
   const timestamp = Number(deadline) * 1000; // Convert seconds to milliseconds
   return timestamp > Date.now(); // Check if the deadline is in the future
 };
+
+export async function waitForResult(): Promise<void> {
+  return new Promise((resolve) => {
+    // Wait for 5 seconds (5000 milliseconds)
+    setTimeout(() => {
+      resolve(); // Resolve the promise after the timeout
+    }, 5000);
+  });
+}

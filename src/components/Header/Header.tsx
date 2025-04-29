@@ -16,14 +16,10 @@ import { useHeaderNavigation } from "../../hooks/useHeaderNavigation.ts";
 import CreateProposalFormContent from "../CreateProposalFormContent/CreateProposalFormContent.tsx";
 import { Dialog } from "../common/Dialog";
 import { ProgressButton } from "../common/ProgressButton";
+import { DonateFormContent } from "../DonateFormContent";
 
 const Header: React.FC = () => {
-  const {
-    openCreateProposalDialog,
-    isCreateProposalDialogOpened,
-    closeCreateProposalDialog,
-    createProposalForm,
-  } = useHeaderNavigation();
+  const { createProposalForm, donateForm } = useHeaderNavigation();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { disconnect } = useDisconnect();
@@ -38,9 +34,16 @@ const Header: React.FC = () => {
   };
 
   const handleCreateProposal = () => {
-    // Your logic for creating a proposal goes here.
-    if (!isCreateProposalDialogOpened) {
-      openCreateProposalDialog();
+    if (!createProposalForm.isCreateProposalDialogOpened) {
+      createProposalForm.openCreateProposalDialog();
+    }
+
+    handleClose();
+  };
+
+  const handleDonate = () => {
+    if (!donateForm.isDonateDialogOpened) {
+      donateForm.openDonateDialog();
     }
 
     handleClose();
@@ -70,6 +73,7 @@ const Header: React.FC = () => {
               <MenuItem onClick={handleCreateProposal}>
                 Create Proposal
               </MenuItem>
+              <MenuItem onClick={handleDonate}>Donate</MenuItem>
             </Menu>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               NGO DAO - Dashboard
@@ -89,19 +93,19 @@ const Header: React.FC = () => {
         {/* Spacer to offset the fixed AppBar */}
         <Toolbar />
       </Box>
-      {isCreateProposalDialogOpened && (
-        <FormProvider {...createProposalForm.formMethods}>
+      {createProposalForm.isCreateProposalDialogOpened && (
+        <FormProvider {...createProposalForm.form.formMethods}>
           <Dialog
-            open={isCreateProposalDialogOpened}
+            open={createProposalForm.isCreateProposalDialogOpened}
             fullWidth
             maxWidth="xl"
             onClose={() => {
-              closeCreateProposalDialog();
+              createProposalForm.closeCreateProposalDialog();
             }}
             title={<Typography variant="h4">Create Proposal</Typography>}
             statusMessage={
               <>
-                {createProposalForm.formResults.isConfirming && (
+                {createProposalForm.form.formResults.isConfirming && (
                   <Typography variant="body1">Creating proposal...</Typography>
                 )}
               </>
@@ -111,7 +115,7 @@ const Header: React.FC = () => {
                 <Button
                   id="create-proposal-cancel"
                   onClick={() => {
-                    closeCreateProposalDialog();
+                    createProposalForm.closeCreateProposalDialog();
                   }}
                   variant="text"
                   color="inherit"
@@ -120,11 +124,13 @@ const Header: React.FC = () => {
                 </Button>
 
                 <ProgressButton
-                  id="create-multiview-listing-confirm"
-                  isLoading={createProposalForm.formResults.isLoading || false}
-                  disabled={createProposalForm.formResults.isLoading}
+                  id="create-proposal-confirm"
+                  isLoading={
+                    createProposalForm.form.formResults.isLoading || false
+                  }
+                  disabled={createProposalForm.form.formResults.isLoading}
                   onClick={() => {
-                    createProposalForm.handleSubmit();
+                    createProposalForm.form.handleSubmit();
                   }}
                   variant="contained"
                   color="primary"
@@ -136,6 +142,57 @@ const Header: React.FC = () => {
           >
             <form>
               <CreateProposalFormContent />
+            </form>
+          </Dialog>
+        </FormProvider>
+      )}
+      {donateForm.isDonateDialogOpened && (
+        <FormProvider {...donateForm.form.formMethods}>
+          <Dialog
+            open={donateForm.isDonateDialogOpened}
+            fullWidth
+            maxWidth="xl"
+            onClose={() => {
+              donateForm.closeDonateDialog();
+            }}
+            title={<Typography variant="h4">Donate to NGO</Typography>}
+            statusMessage={
+              <>
+                {donateForm.form.formResults.isConfirming && (
+                  <Typography variant="body1">Donating...</Typography>
+                )}
+              </>
+            }
+            actions={
+              <>
+                <Button
+                  id="donate-cancel"
+                  onClick={() => {
+                    donateForm.closeDonateDialog();
+                  }}
+                  variant="text"
+                  color="inherit"
+                >
+                  Cancel
+                </Button>
+
+                <ProgressButton
+                  id="donate-confirm"
+                  isLoading={donateForm.form.formResults.isLoading || false}
+                  disabled={donateForm.form.formResults.isLoading}
+                  onClick={() => {
+                    donateForm.form.handleSubmit();
+                  }}
+                  variant="contained"
+                  color="primary"
+                >
+                  Donate
+                </ProgressButton>
+              </>
+            }
+          >
+            <form>
+              <DonateFormContent />
             </form>
           </Dialog>
         </FormProvider>

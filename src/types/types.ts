@@ -6,6 +6,10 @@ export interface CreateProposalForm {
   data: string;
 }
 
+export interface DonateForm {
+  value: number;
+}
+
 export interface CreateProposal {
   title: string;
   description: string;

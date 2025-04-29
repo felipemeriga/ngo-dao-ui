@@ -1,12 +1,12 @@
-import { useEffect, useState, useRef } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { CreateProposalForm } from "../../../types/types.ts";
-import { useCreateProposal } from "../../../hooks/useNGODAO.ts";
-import { waitForResult, weiValue } from "../../../utils/utils.ts";
+import { useEffect, useRef, useState } from "react";
 import { useAlerts } from "../../../providers/AlertsProvider.tsx";
-import EtherScanLink from "../../common/EtherScanLink/EtherScanLink.tsx";
-import { config } from "../../../config.ts";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { DonateForm } from "../../../types/types.ts";
+import { useDonate } from "../../../hooks/useNGODAO.ts";
 import { WagmiProvider } from "wagmi";
+import { config } from "../../../config.ts";
+import EtherScanLink from "../../common/EtherScanLink/EtherScanLink.tsx";
+import { waitForResult, weiValue } from "../../../utils/utils.ts";
 
 interface InputProps {
   handleAfterSubmit: () => void;
@@ -19,14 +19,15 @@ interface FormResults {
   isConfirming: boolean;
 }
 
-export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
+export const useDonateForm = ({ handleAfterSubmit }: InputProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const alerts = useAlerts();
-  const { createProposal, isPending, error, hash, isConfirming, isConfirmed } =
-    useCreateProposal();
-  const methods = useForm<CreateProposalForm>({
+  const { donate, isPending, error, hash, isConfirming, isConfirmed } =
+    useDonate();
+
+  const methods = useForm<DonateForm>({
     mode: "onChange", // Ensure validation triggers on input
-    defaultValues: { value: 0, target: "", title: "", description: "" },
+    defaultValues: { value: 0.1 },
   });
 
   // Block `handleAfterSubmit` from being called multiple times
@@ -40,7 +41,7 @@ export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
       methods.reset();
       alerts({
         title: "Success",
-        description: "The proposal was created successfully...",
+        description: "You have successfully donated to the NGO...",
         content: (
           <WagmiProvider config={config}>
             <EtherScanLink
@@ -64,18 +65,12 @@ export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
     }
   }, [hash, error, isPending, isConfirmed, alerts, handleAfterSubmit, methods]);
 
-  const onSubmit: SubmitHandler<CreateProposalForm> = async (formData) => {
+  const onSubmit: SubmitHandler<DonateForm> = async (formData) => {
     setIsLoading(true);
     hasHandledSubmit.current = false; // Reset before execution
     const wei = weiValue(formData.value);
 
-    createProposal({
-      title: formData.title,
-      description: formData.description,
-      target: formData.target,
-      value: wei,
-      data: formData.data,
-    });
+    donate(wei);
 
     // Wait for the proposal submission to complete or an error to occur
     await waitForResult();

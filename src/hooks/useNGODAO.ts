@@ -73,6 +73,42 @@ export const useVoted = (proposalId: bigint | null) => {
   };
 };
 
+export const useDonate = () => {
+  // Hook for writing to the contract
+  const {
+    data: donationTxHash,
+    error,
+    isPending,
+    writeContract,
+  } = useWriteContract();
+
+  // Hook to track transaction confirmation state
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({
+      hash: donationTxHash,
+    });
+
+  // Function to trigger the donation transaction
+  const donate = (amount: bigint) => {
+    writeContract({
+      abi: NGODAO__factory.abi,
+      address: contractConfig.address as `0x${string}`,
+      functionName: "donate",
+      args: [],
+      value: amount,
+    });
+  };
+
+  return {
+    hash: donationTxHash,
+    donate, // Function to trigger the donation
+    isPending, // Transaction submission state
+    isConfirming, // Transaction confirmation in-progress
+    isConfirmed, // Transaction successfully confirmed
+    error, // Error in case the transaction fails
+  };
+};
+
 export const useCreateProposal = () => {
   const { data: hash, error, isPending, writeContract } = useWriteContract();
 
