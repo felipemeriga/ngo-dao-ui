@@ -18,6 +18,11 @@ export interface CreateProposal {
   data: string;
 }
 
+export interface Vote {
+  proposalId: bigint;
+  vote: boolean;
+}
+
 export interface Proposal {
   id: bigint;
   title: string;

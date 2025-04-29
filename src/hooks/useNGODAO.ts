@@ -7,7 +7,7 @@ import {
   usePublicClient,
 } from "wagmi";
 import { NGODAO__factory } from "../types";
-import { CreateProposal } from "../types/types.ts";
+import { CreateProposal, Vote } from "../types/types.ts";
 
 const contractConfig = {
   address: "0xe53f2315Ae1fbFd91250de7199b21AF4F0b968A2",
@@ -138,6 +138,33 @@ export const useCreateProposal = () => {
     isConfirming,
     isConfirmed,
     createProposal,
+  };
+};
+
+export const useVote = () => {
+  const { data: hash, error, isPending, writeContract } = useWriteContract();
+
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({
+      hash,
+    });
+
+  const vote = ({ proposalId, vote }: Vote) => {
+    writeContract({
+      abi: NGODAO__factory.abi,
+      address: contractConfig.address as `0x${string}`,
+      functionName: "vote",
+      args: [proposalId, vote],
+    });
+  };
+
+  return {
+    hash,
+    error,
+    isPending,
+    isConfirming,
+    isConfirmed,
+    vote,
   };
 };
 
