@@ -19,12 +19,12 @@ export interface CreateProposal {
 }
 
 export interface Vote {
-  proposalId: bigint;
+  proposalId: `0x${string}`;
   vote: boolean;
 }
 
 export interface Proposal {
-  id: bigint;
+  id: `0x${string}`;
   title: string;
   description: string;
   target: `0x${string}`; // Ethereum address

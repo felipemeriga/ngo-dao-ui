@@ -10,7 +10,7 @@ import { NGODAO__factory } from "../types";
 import { CreateProposal, Vote } from "../types/types.ts";
 
 const contractConfig = {
-  address: "0xe53f2315Ae1fbFd91250de7199b21AF4F0b968A2",
+  address: "0x865C2A7104e77b601B39ab266a13Ab08426fB211",
   abi: NGODAO__factory.abi,
 };
 
@@ -50,12 +50,12 @@ export const useDonations = () => {
   });
 };
 
-export const useVoted = (proposalId: bigint | null) => {
+export const useVoted = (proposalId: `0x${string}` | null) => {
   const { address } = useAccount(); // The voter's wallet/account
   const voterAddress = address || ("" as `0x${string}`);
 
   // Provide stable fallback arguments
-  const safeProposalId = proposalId ?? BigInt(0); // Use `BigInt(0)` when proposalId is invalid
+  const safeProposalId = proposalId ?? ("0x0" as `0x${string}`);
   const shouldFetch = proposalId !== null;
 
   // Always call the hook, but use valid placeholder arguments

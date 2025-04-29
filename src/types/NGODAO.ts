@@ -27,7 +27,7 @@ import type {
 } from "./common";
 
 export type ProposalStruct = {
-  id: BigNumberish;
+  id: BytesLike;
   title: string;
   description: string;
   target: string;
@@ -40,7 +40,7 @@ export type ProposalStruct = {
 };
 
 export type ProposalStructOutput = [
-  BigNumber,
+  string,
   string,
   string,
   string,
@@ -51,7 +51,7 @@ export type ProposalStructOutput = [
   BigNumber,
   boolean,
 ] & {
-  id: BigNumber;
+  id: string;
   title: string;
   description: string;
   target: string;
@@ -70,19 +70,21 @@ export interface NGODAOInterface extends utils.Interface {
     "createProposal(string,string,address,uint256,bytes)": FunctionFragment;
     "donate()": FunctionFragment;
     "donations(address)": FunctionFragment;
-    "executeProposal(uint256)": FunctionFragment;
+    "executeProposal(bytes16)": FunctionFragment;
     "getAllProposals()": FunctionFragment;
     "initialize(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
-    "proposals(uint256)": FunctionFragment;
+    "proposalIds(uint256)": FunctionFragment;
+    "proposals(bytes16)": FunctionFragment;
     "proxiableUUID()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "totalDonations()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "upgradeToAndCall(address,bytes)": FunctionFragment;
-    "vote(uint256,bool)": FunctionFragment;
-    "voted(uint256,address)": FunctionFragment;
+    "vote(bytes16,bool)": FunctionFragment;
+    "voted(bytes16,address)": FunctionFragment;
     "votingPeriod()": FunctionFragment;
+    "withdrawAll()": FunctionFragment;
   };
 
   getFunction(
@@ -96,6 +98,7 @@ export interface NGODAOInterface extends utils.Interface {
       | "getAllProposals"
       | "initialize"
       | "owner"
+      | "proposalIds"
       | "proposals"
       | "proxiableUUID"
       | "renounceOwnership"
@@ -104,7 +107,8 @@ export interface NGODAOInterface extends utils.Interface {
       | "upgradeToAndCall"
       | "vote"
       | "voted"
-      | "votingPeriod",
+      | "votingPeriod"
+      | "withdrawAll",
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -123,7 +127,7 @@ export interface NGODAOInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "donations", values: [string]): string;
   encodeFunctionData(
     functionFragment: "executeProposal",
-    values: [BigNumberish],
+    values: [BytesLike],
   ): string;
   encodeFunctionData(
     functionFragment: "getAllProposals",
@@ -135,8 +139,12 @@ export interface NGODAOInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "proposals",
+    functionFragment: "proposalIds",
     values: [BigNumberish],
+  ): string;
+  encodeFunctionData(
+    functionFragment: "proposals",
+    values: [BytesLike],
   ): string;
   encodeFunctionData(
     functionFragment: "proxiableUUID",
@@ -160,14 +168,18 @@ export interface NGODAOInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "vote",
-    values: [BigNumberish, boolean],
+    values: [BytesLike, boolean],
   ): string;
   encodeFunctionData(
     functionFragment: "voted",
-    values: [BigNumberish, string],
+    values: [BytesLike, string],
   ): string;
   encodeFunctionData(
     functionFragment: "votingPeriod",
+    values?: undefined,
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawAll",
     values?: undefined,
   ): string;
 
@@ -195,6 +207,10 @@ export interface NGODAOInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "proposalIds",
+    data: BytesLike,
+  ): Result;
   decodeFunctionResult(functionFragment: "proposals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "proxiableUUID",
@@ -222,15 +238,19 @@ export interface NGODAOInterface extends utils.Interface {
     functionFragment: "votingPeriod",
     data: BytesLike,
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawAll",
+    data: BytesLike,
+  ): Result;
 
   events: {
     "DonationReceived(address,uint256)": EventFragment;
     "Initialized(uint64)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
-    "ProposalCreated(uint256,string,string,address,uint256,uint256)": EventFragment;
-    "ProposalExecuted(uint256,bool)": EventFragment;
+    "ProposalCreated(bytes16,string,string,address,uint256,uint256)": EventFragment;
+    "ProposalExecuted(bytes16,bool)": EventFragment;
     "Upgraded(address)": EventFragment;
-    "VoteCast(uint256,address,bool)": EventFragment;
+    "VoteCast(bytes16,address,bool)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "DonationReceived"): EventFragment;
@@ -274,7 +294,7 @@ export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface ProposalCreatedEventObject {
-  proposalId: BigNumber;
+  proposalId: string;
   title: string;
   description: string;
   target: string;
@@ -282,18 +302,18 @@ export interface ProposalCreatedEventObject {
   deadline: BigNumber;
 }
 export type ProposalCreatedEvent = TypedEvent<
-  [BigNumber, string, string, string, BigNumber, BigNumber],
+  [string, string, string, string, BigNumber, BigNumber],
   ProposalCreatedEventObject
 >;
 
 export type ProposalCreatedEventFilter = TypedEventFilter<ProposalCreatedEvent>;
 
 export interface ProposalExecutedEventObject {
-  proposalId: BigNumber;
+  proposalId: string;
   success: boolean;
 }
 export type ProposalExecutedEvent = TypedEvent<
-  [BigNumber, boolean],
+  [string, boolean],
   ProposalExecutedEventObject
 >;
 
@@ -308,12 +328,12 @@ export type UpgradedEvent = TypedEvent<[string], UpgradedEventObject>;
 export type UpgradedEventFilter = TypedEventFilter<UpgradedEvent>;
 
 export interface VoteCastEventObject {
-  proposalId: BigNumber;
+  proposalId: string;
   voter: string;
   support: boolean;
 }
 export type VoteCastEvent = TypedEvent<
-  [BigNumber, string, boolean],
+  [string, string, boolean],
   VoteCastEventObject
 >;
 
@@ -368,7 +388,7 @@ export interface NGODAO extends BaseContract {
     donations(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     executeProposal(
-      proposalId: BigNumberish,
+      proposalId: BytesLike,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
@@ -383,12 +403,17 @@ export interface NGODAO extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    proposals(
+    proposalIds(
       arg0: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<[string]>;
+
+    proposals(
+      arg0: BytesLike,
       overrides?: CallOverrides,
     ): Promise<
       [
-        BigNumber,
+        string,
         string,
         string,
         string,
@@ -399,7 +424,7 @@ export interface NGODAO extends BaseContract {
         BigNumber,
         boolean,
       ] & {
-        id: BigNumber;
+        id: string;
         title: string;
         description: string;
         target: string;
@@ -432,18 +457,22 @@ export interface NGODAO extends BaseContract {
     ): Promise<ContractTransaction>;
 
     vote(
-      proposalId: BigNumberish,
+      proposalId: BytesLike,
       support: boolean,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
     voted(
-      arg0: BigNumberish,
+      arg0: BytesLike,
       arg1: string,
       overrides?: CallOverrides,
     ): Promise<[boolean]>;
 
     votingPeriod(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    withdrawAll(
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
   };
 
   UPGRADE_INTERFACE_VERSION(overrides?: CallOverrides): Promise<string>;
@@ -468,7 +497,7 @@ export interface NGODAO extends BaseContract {
   donations(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   executeProposal(
-    proposalId: BigNumberish,
+    proposalId: BytesLike,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
@@ -481,12 +510,14 @@ export interface NGODAO extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
+  proposalIds(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
   proposals(
-    arg0: BigNumberish,
+    arg0: BytesLike,
     overrides?: CallOverrides,
   ): Promise<
     [
-      BigNumber,
+      string,
       string,
       string,
       string,
@@ -497,7 +528,7 @@ export interface NGODAO extends BaseContract {
       BigNumber,
       boolean,
     ] & {
-      id: BigNumber;
+      id: string;
       title: string;
       description: string;
       target: string;
@@ -530,18 +561,22 @@ export interface NGODAO extends BaseContract {
   ): Promise<ContractTransaction>;
 
   vote(
-    proposalId: BigNumberish,
+    proposalId: BytesLike,
     support: boolean,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   voted(
-    arg0: BigNumberish,
+    arg0: BytesLike,
     arg1: string,
     overrides?: CallOverrides,
   ): Promise<boolean>;
 
   votingPeriod(overrides?: CallOverrides): Promise<BigNumber>;
+
+  withdrawAll(
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     UPGRADE_INTERFACE_VERSION(overrides?: CallOverrides): Promise<string>;
@@ -555,14 +590,14 @@ export interface NGODAO extends BaseContract {
       _value: BigNumberish,
       _data: BytesLike,
       overrides?: CallOverrides,
-    ): Promise<BigNumber>;
+    ): Promise<string>;
 
     donate(overrides?: CallOverrides): Promise<void>;
 
     donations(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     executeProposal(
-      proposalId: BigNumberish,
+      proposalId: BytesLike,
       overrides?: CallOverrides,
     ): Promise<void>;
 
@@ -575,12 +610,14 @@ export interface NGODAO extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<string>;
 
+    proposalIds(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
     proposals(
-      arg0: BigNumberish,
+      arg0: BytesLike,
       overrides?: CallOverrides,
     ): Promise<
       [
-        BigNumber,
+        string,
         string,
         string,
         string,
@@ -591,7 +628,7 @@ export interface NGODAO extends BaseContract {
         BigNumber,
         boolean,
       ] & {
-        id: BigNumber;
+        id: string;
         title: string;
         description: string;
         target: string;
@@ -622,18 +659,20 @@ export interface NGODAO extends BaseContract {
     ): Promise<void>;
 
     vote(
-      proposalId: BigNumberish,
+      proposalId: BytesLike,
       support: boolean,
       overrides?: CallOverrides,
     ): Promise<void>;
 
     voted(
-      arg0: BigNumberish,
+      arg0: BytesLike,
       arg1: string,
       overrides?: CallOverrides,
     ): Promise<boolean>;
 
     votingPeriod(overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdrawAll(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -658,8 +697,8 @@ export interface NGODAO extends BaseContract {
       newOwner?: string | null,
     ): OwnershipTransferredEventFilter;
 
-    "ProposalCreated(uint256,string,string,address,uint256,uint256)"(
-      proposalId?: BigNumberish | null,
+    "ProposalCreated(bytes16,string,string,address,uint256,uint256)"(
+      proposalId?: BytesLike | null,
       title?: null,
       description?: null,
       target?: null,
@@ -667,7 +706,7 @@ export interface NGODAO extends BaseContract {
       deadline?: null,
     ): ProposalCreatedEventFilter;
     ProposalCreated(
-      proposalId?: BigNumberish | null,
+      proposalId?: BytesLike | null,
       title?: null,
       description?: null,
       target?: null,
@@ -675,25 +714,25 @@ export interface NGODAO extends BaseContract {
       deadline?: null,
     ): ProposalCreatedEventFilter;
 
-    "ProposalExecuted(uint256,bool)"(
-      proposalId?: BigNumberish | null,
+    "ProposalExecuted(bytes16,bool)"(
+      proposalId?: BytesLike | null,
       success?: null,
     ): ProposalExecutedEventFilter;
     ProposalExecuted(
-      proposalId?: BigNumberish | null,
+      proposalId?: BytesLike | null,
       success?: null,
     ): ProposalExecutedEventFilter;
 
     "Upgraded(address)"(implementation?: string | null): UpgradedEventFilter;
     Upgraded(implementation?: string | null): UpgradedEventFilter;
 
-    "VoteCast(uint256,address,bool)"(
-      proposalId?: BigNumberish | null,
+    "VoteCast(bytes16,address,bool)"(
+      proposalId?: BytesLike | null,
       voter?: string | null,
       support?: null,
     ): VoteCastEventFilter;
     VoteCast(
-      proposalId?: BigNumberish | null,
+      proposalId?: BytesLike | null,
       voter?: string | null,
       support?: null,
     ): VoteCastEventFilter;
@@ -722,7 +761,7 @@ export interface NGODAO extends BaseContract {
     donations(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     executeProposal(
-      proposalId: BigNumberish,
+      proposalId: BytesLike,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
@@ -735,10 +774,12 @@ export interface NGODAO extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    proposals(
+    proposalIds(
       arg0: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
+
+    proposals(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
 
     proxiableUUID(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -760,18 +801,20 @@ export interface NGODAO extends BaseContract {
     ): Promise<BigNumber>;
 
     vote(
-      proposalId: BigNumberish,
+      proposalId: BytesLike,
       support: boolean,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
     voted(
-      arg0: BigNumberish,
+      arg0: BytesLike,
       arg1: string,
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     votingPeriod(overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdrawAll(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -802,7 +845,7 @@ export interface NGODAO extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     executeProposal(
-      proposalId: BigNumberish,
+      proposalId: BytesLike,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
@@ -815,8 +858,13 @@ export interface NGODAO extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    proposals(
+    proposalIds(
       arg0: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<PopulatedTransaction>;
+
+    proposals(
+      arg0: BytesLike,
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
@@ -840,17 +888,21 @@ export interface NGODAO extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     vote(
-      proposalId: BigNumberish,
+      proposalId: BytesLike,
       support: boolean,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
     voted(
-      arg0: BigNumberish,
+      arg0: BytesLike,
       arg1: string,
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     votingPeriod(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    withdrawAll(
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
   };
 }

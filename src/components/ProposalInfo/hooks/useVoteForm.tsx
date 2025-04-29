@@ -11,6 +11,13 @@ interface InputProps {
   handleAfterSubmit: () => void;
 }
 
+interface FormResults {
+  isLoading: boolean;
+  hash: string;
+  isConfirmed: boolean;
+  isConfirming: boolean;
+}
+
 export const useVoteForm = ({ handleAfterSubmit }: InputProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const alerts = useAlerts();

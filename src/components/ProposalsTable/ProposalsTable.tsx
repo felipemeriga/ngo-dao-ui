@@ -118,7 +118,7 @@ const ProposalsTable: React.FC = () => {
               </TableBody>
             </StyledTable>
           </TableContainer>
-          {isProposalInfoDialogOpened && (
+          {isProposalInfoDialogOpened && proposal && (
             <Dialog
               open={isProposalInfoDialogOpened}
               fullWidth
@@ -141,10 +141,10 @@ const ProposalsTable: React.FC = () => {
                   <ProgressButton
                     id="create-multiview-listing-confirm"
                     isLoading={isVotedLoading}
-                    disabled={!isInTheFuture(proposal?.deadline) || hasVoted}
+                    disabled={!isInTheFuture(proposal.deadline) || hasVoted}
                     onClick={() => {
                       voteForm.handleSubmit({
-                        proposalId: proposal?.id,
+                        proposalId: proposal.id,
                         vote: true,
                       });
                     }}
@@ -156,10 +156,10 @@ const ProposalsTable: React.FC = () => {
                   <ProgressButton
                     id="create-multiview-listing-confirm"
                     isLoading={isVotedLoading}
-                    disabled={!isInTheFuture(proposal?.deadline) || hasVoted}
+                    disabled={!isInTheFuture(proposal.deadline) || hasVoted}
                     onClick={() => {
                       voteForm.handleSubmit({
-                        proposalId: proposal?.id,
+                        proposalId: proposal.id,
                         vote: false,
                       });
                     }}

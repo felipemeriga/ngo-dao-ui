@@ -2,7 +2,6 @@ import { useDialog } from "../../../hooks/useDialog.ts";
 import { Proposal } from "../../../types/types.ts";
 import { useVoted } from "../../../hooks/useNGODAO.ts";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useCreateProposalForm } from "../../CreateProposalFormContent/hooks/useCreateProposalForm.tsx";
 import { useVoteForm } from "./useVoteForm.tsx";
 
 export const useProposalInfo = (handleRefetch: () => void) => {
@@ -27,7 +26,7 @@ export const useProposalInfo = (handleRefetch: () => void) => {
   // Determine `proposalId`; cache it using `useMemo`
   const proposalId = useMemo(() => {
     return proposal?.id !== null && proposal?.id !== undefined
-      ? BigInt(proposal.id)
+      ? (proposal.id as `0x${string}`)
       : null;
   }, [proposal]);
 
