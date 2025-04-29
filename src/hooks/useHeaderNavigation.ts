@@ -21,7 +21,7 @@ export const useHeaderNavigation = () => {
     closeCreateProposalDialog();
     closeDonateDialog();
     handleRefetch(); // Call refetch here without entire, re-execution on every render
-  }, [closeCreateProposalDialog, handleRefetch]);
+  }, [closeCreateProposalDialog, handleRefetch, closeDonateDialog]);
 
   const createProposalForm = useCreateProposalForm({
     handleAfterSubmit,

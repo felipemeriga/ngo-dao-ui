@@ -8,7 +8,6 @@ import {
 import { Controller, useFormContext } from "react-hook-form";
 import { DonateForm } from "../../types/types.ts";
 import { useAccount, useBalance } from "wagmi";
-import { ethValue } from "../../utils/utils.ts";
 
 const DonateFormContent: React.FC = () => {
   const { address } = useAccount(); // Get the current wallet address
