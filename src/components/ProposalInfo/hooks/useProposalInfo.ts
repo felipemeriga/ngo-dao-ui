@@ -1,9 +1,11 @@
 import { useDialog } from "../../../hooks/useDialog.ts";
 import { Proposal } from "../../../types/types.ts";
 import { useVoted } from "../../../hooks/useNGODAO.ts";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCreateProposalForm } from "../../CreateProposalFormContent/hooks/useCreateProposalForm.tsx";
+import { useVoteForm } from "./useVoteForm.tsx";
 
-export const useProposalInfo = () => {
+export const useProposalInfo = (handleRefetch: () => void) => {
   const [proposal, setSelectedProposal] = useState<Proposal | null>(null);
 
   const [
@@ -11,6 +13,16 @@ export const useProposalInfo = () => {
     openProposalInfoDialog,
     closeProposalInfoDialog,
   ] = useDialog();
+
+  // Wrap handleAfterSubmit in useCallback
+  const handleAfterSubmit = useCallback(() => {
+    closeProposalInfoDialog();
+    handleRefetch(); // Call refetch here without entire, re-execution on every render
+  }, [closeProposalInfoDialog, handleRefetch]);
+
+  const voteForm = useVoteForm({
+    handleAfterSubmit,
+  });
 
   // Determine `proposalId`; cache it using `useMemo`
   const proposalId = useMemo(() => {
@@ -48,6 +60,7 @@ export const useProposalInfo = () => {
       isProposalInfoDialogOpened,
       openProposalInfoDialog,
       closeProposalInfoDialog,
+      voteForm,
     }),
     [
       proposal,
@@ -58,6 +71,7 @@ export const useProposalInfo = () => {
       isProposalInfoDialogOpened,
       openProposalInfoDialog,
       closeProposalInfoDialog,
+      voteForm,
     ],
   );
 };

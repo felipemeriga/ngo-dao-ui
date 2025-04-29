@@ -36,7 +36,7 @@ export const StyledTable = styled(Table)(() => ({
 }));
 
 const ProposalsTable: React.FC = () => {
-  const { isLoading, error, data } = useProposalsContext();
+  const { isLoading, error, data, handleRefetch } = useProposalsContext();
   const {
     proposal,
     closeProposalInfoDialog,
@@ -45,7 +45,10 @@ const ProposalsTable: React.FC = () => {
     openProposalInfoDialog,
     hasVoted,
     isVotedLoading,
-  } = useProposalInfo();
+    voteForm,
+  } = useProposalInfo(handleRefetch);
+
+  console.log(hasVoted);
 
   // Example of click handler logic for proposals
   const handleRowClick = (row: Proposal) => {
@@ -140,7 +143,10 @@ const ProposalsTable: React.FC = () => {
                     isLoading={isVotedLoading}
                     disabled={!isInTheFuture(proposal?.deadline) || hasVoted}
                     onClick={() => {
-                      // createProposalForm.handleSubmit();
+                      voteForm.handleSubmit({
+                        proposalId: proposal?.id,
+                        vote: true,
+                      });
                     }}
                     variant="contained"
                     color="primary"
@@ -152,7 +158,10 @@ const ProposalsTable: React.FC = () => {
                     isLoading={isVotedLoading}
                     disabled={!isInTheFuture(proposal?.deadline) || hasVoted}
                     onClick={() => {
-                      // createProposalForm.handleSubmit();
+                      voteForm.handleSubmit({
+                        proposalId: proposal?.id,
+                        vote: false,
+                      });
                     }}
                     variant="contained"
                     color="error"
