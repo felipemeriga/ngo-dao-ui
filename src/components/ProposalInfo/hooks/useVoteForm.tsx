@@ -33,7 +33,7 @@ export const useVoteForm = ({ handleAfterSubmit }: InputProps) => {
       setIsLoading(false);
       alerts({
         title: "Success",
-        description: "You have successfully donated to the NGO...",
+        description: "You have successfully voted for the proposal...",
         content: (
           <WagmiProvider config={config}>
             <EtherScanLink

@@ -21,6 +21,7 @@ import { ProposalInfo } from "../ProposalInfo";
 import { Deadline } from "../common/Deadline";
 import { Proposal } from "../../types/types.ts";
 import { ProgressButton } from "../common/ProgressButton";
+import { useIsOwner } from "../../hooks/useNGODAO.ts";
 export const StyledTableRow = styled(TableRow)(() => ({
   "&:last-child td, &:last-child th": { border: 0 },
   "&:hover": {
@@ -48,7 +49,9 @@ const ProposalsTable: React.FC = () => {
     voteForm,
   } = useProposalInfo(handleRefetch);
 
-  console.log(hasVoted);
+  const isOwner = useIsOwner();
+
+  console.log(isOwner);
 
   // Example of click handler logic for proposals
   const handleRowClick = (row: Proposal) => {
@@ -127,21 +130,23 @@ const ProposalsTable: React.FC = () => {
                 closeProposalInfoDialog();
               }}
               title={<Typography variant="h4">{proposal?.title}</Typography>}
-              // statusMessage={
-              //   <>
-              //     {createProposalForm.formResults.isConfirming && (
-              //       <Typography variant="body1">
-              //         Creating proposal...
-              //       </Typography>
-              //     )}
-              //   </>
-              // }
+              statusMessage={
+                <>
+                  {voteForm.formResults.isConfirming && (
+                    <Typography variant="body1">Voting...</Typography>
+                  )}
+                </>
+              }
               actions={
                 <>
                   <ProgressButton
                     id="create-multiview-listing-confirm"
-                    isLoading={isVotedLoading}
-                    disabled={!isInTheFuture(proposal.deadline) || hasVoted}
+                    isLoading={isVotedLoading || voteForm.formResults.isLoading}
+                    disabled={
+                      !isInTheFuture(proposal.deadline) ||
+                      hasVoted ||
+                      voteForm.formResults.isLoading
+                    }
                     onClick={() => {
                       voteForm.handleSubmit({
                         proposalId: proposal.id,
@@ -155,8 +160,12 @@ const ProposalsTable: React.FC = () => {
                   </ProgressButton>
                   <ProgressButton
                     id="create-multiview-listing-confirm"
-                    isLoading={isVotedLoading}
-                    disabled={!isInTheFuture(proposal.deadline) || hasVoted}
+                    isLoading={isVotedLoading || voteForm.formResults.isLoading}
+                    disabled={
+                      !isInTheFuture(proposal.deadline) ||
+                      hasVoted ||
+                      voteForm.formResults.isLoading
+                    }
                     onClick={() => {
                       voteForm.handleSubmit({
                         proposalId: proposal.id,
