@@ -21,7 +21,7 @@ import { ProposalInfo } from "../ProposalInfo";
 import { Deadline } from "../common/Deadline";
 import { Proposal } from "../../types/types.ts";
 import { ProgressButton } from "../common/ProgressButton";
-import { useIsOwner } from "../../hooks/useNGODAO.ts";
+import { useContractOwner } from "../../hooks/useNGODAO.ts";
 export const StyledTableRow = styled(TableRow)(() => ({
   "&:last-child td, &:last-child th": { border: 0 },
   "&:hover": {
@@ -49,9 +49,7 @@ const ProposalsTable: React.FC = () => {
     voteForm,
   } = useProposalInfo(handleRefetch);
 
-  const isOwner = useIsOwner();
-
-  console.log(isOwner);
+  const isOwner = useContractOwner();
 
   // Example of click handler logic for proposals
   const handleRowClick = (row: Proposal) => {
@@ -140,7 +138,22 @@ const ProposalsTable: React.FC = () => {
               actions={
                 <>
                   <ProgressButton
-                    id="create-multiview-listing-confirm"
+                    id="proposal-info-execute"
+                    isLoading={false}
+                    disabled={!isOwner}
+                    onClick={() => {
+                      voteForm.handleSubmit({
+                        proposalId: proposal.id,
+                        vote: true,
+                      });
+                    }}
+                    variant="contained"
+                    color="info"
+                  >
+                    Execute
+                  </ProgressButton>
+                  <ProgressButton
+                    id="proposal-info-approve"
                     isLoading={isVotedLoading || voteForm.formResults.isLoading}
                     disabled={
                       !isInTheFuture(proposal.deadline) ||
@@ -159,7 +172,7 @@ const ProposalsTable: React.FC = () => {
                     Approve
                   </ProgressButton>
                   <ProgressButton
-                    id="create-multiview-listing-confirm"
+                    id="proposal-info-disapprove"
                     isLoading={isVotedLoading || voteForm.formResults.isLoading}
                     disabled={
                       !isInTheFuture(proposal.deadline) ||

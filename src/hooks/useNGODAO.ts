@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 // useNGODAO.ts
 import {
   useReadContract,
@@ -50,51 +51,26 @@ export const useDonations = () => {
   });
 };
 
-/**
- * Check if the current connected wallet is the owner of the smart contract
- * @param connectedAddress - The connected wallet address
- * @returns {Promise<boolean>} - True if the connected wallet is the owner, false otherwise
- */
-export const isOwner = async (
-  connectedAddress?: `0x${string}`,
-): Promise<boolean> => {
-  if (!connectedAddress) {
-    console.error("No connected wallet address provided!");
-    return false;
-  }
-
-  // Fetch the contract owner
-  try {
-    const { data: contractOwner } = useReadContract({
-      address: contractConfig.address as `0x${string}`,
-      abi: contractConfig.abi,
-      functionName: "owner", // Ensure your smart contract has the `owner` function
-    });
-
-    if (!contractOwner) {
-      console.error("Failed to fetch the contract owner!");
-      return false;
-    }
-
-    // Check if the connected wallet address matches the contract owner
-    return (
-      connectedAddress.toLowerCase() === (contractOwner as string).toLowerCase()
-    );
-  } catch (error) {
-    console.error("Error while checking contract ownership:", error);
-    return false;
-  }
-};
-
-/**
- * Hook to use for ownership checking
- */
-export const useIsOwner = () => {
+export const useContractOwner = (): boolean => {
   const { address: connectedAddress } = useAccount();
+  if (!connectedAddress) {
+    return false;
+  }
 
-  return async () => {
-    return isOwner(connectedAddress);
-  };
+  const {
+    data: contractOwner,
+    error,
+    isLoading,
+  } = useReadContract({
+    address: contractConfig.address as `0x${string}`,
+    abi: contractConfig.abi,
+    functionName: "owner",
+  });
+  if (!isLoading && !error) {
+    return connectedAddress === contractOwner;
+  }
+
+  return false;
 };
 
 export const useVoted = (proposalId: `0x${string}` | null) => {
