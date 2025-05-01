@@ -47,6 +47,7 @@ const ProposalsTable: React.FC = () => {
     hasVoted,
     isVotedLoading,
     voteForm,
+    executeForm,
   } = useProposalInfo(handleRefetch);
 
   const isOwner = useContractOwner();
@@ -133,19 +134,19 @@ const ProposalsTable: React.FC = () => {
                   {voteForm.formResults.isConfirming && (
                     <Typography variant="body1">Voting...</Typography>
                   )}
+                  {executeForm.formResults.isConfirming && (
+                    <Typography variant="body1">Executing...</Typography>
+                  )}
                 </>
               }
               actions={
                 <>
                   <ProgressButton
                     id="proposal-info-execute"
-                    isLoading={false}
-                    disabled={!isOwner}
+                    isLoading={executeForm.formResults.isLoading}
+                    disabled={!isOwner || executeForm.formResults.isLoading}
                     onClick={() => {
-                      voteForm.handleSubmit({
-                        proposalId: proposal.id,
-                        vote: true,
-                      });
+                      executeForm.handleSubmit(proposal.id);
                     }}
                     variant="contained"
                     color="info"

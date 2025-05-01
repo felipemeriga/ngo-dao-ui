@@ -3,6 +3,7 @@ import { Proposal } from "../../../types/types.ts";
 import { useVoted } from "../../../hooks/useNGODAO.ts";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useVoteForm } from "./useVoteForm.tsx";
+import { useExecuteForm } from "./useExecuteForm.tsx";
 
 export const useProposalInfo = (handleRefetch: () => void) => {
   const [proposal, setSelectedProposal] = useState<Proposal | null>(null);
@@ -20,6 +21,10 @@ export const useProposalInfo = (handleRefetch: () => void) => {
   }, [closeProposalInfoDialog, handleRefetch]);
 
   const voteForm = useVoteForm({
+    handleAfterSubmit,
+  });
+
+  const executeForm = useExecuteForm({
     handleAfterSubmit,
   });
 
@@ -60,6 +65,7 @@ export const useProposalInfo = (handleRefetch: () => void) => {
       openProposalInfoDialog,
       closeProposalInfoDialog,
       voteForm,
+      executeForm,
     }),
     [
       proposal,
@@ -71,6 +77,7 @@ export const useProposalInfo = (handleRefetch: () => void) => {
       openProposalInfoDialog,
       closeProposalInfoDialog,
       voteForm,
+      executeForm,
     ],
   );
 };
