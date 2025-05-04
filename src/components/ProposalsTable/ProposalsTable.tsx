@@ -139,7 +139,6 @@ const ProposalsTable: React.FC = () => {
                   )}
                 </>
               }
-              t
               actions={
                 <>
                   <ProgressButton

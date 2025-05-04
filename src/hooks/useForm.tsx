@@ -36,7 +36,6 @@ export const useNGOForm = <T,>({
   useEffect(() => {
     if (hash && isConfirmed && !isPending && !hasHandledSubmit.current) {
       hasHandledSubmit.current = true;
-      handleAfterSubmit(); // Ensure it only gets executed once
       setIsLoading(false);
       alerts({
         title: "Success",
@@ -52,6 +51,11 @@ export const useNGOForm = <T,>({
         ),
         type: "Success",
       });
+
+      // Use setTimeout to ensure alert is shown before dialog closes
+      setTimeout(() => {
+        handleAfterSubmit();
+      }, 100);
     }
 
     if (error && !hasHandledSubmit.current) {

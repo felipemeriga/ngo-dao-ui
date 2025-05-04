@@ -1,17 +1,23 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, {
-  createContext,
-  useState,
-  useCallback,
-  useContext,
-  useEffect,
-} from "react";
-import styled from "@mui/material/styles/styled";
-import Button from "@mui/material/Button";
+import React, { createContext, useContext, useCallback, useState } from "react";
 import { SnackbarOrigin } from "@mui/material/Snackbar";
+import Button from "@mui/material/Button";
 import ErrorIcon from "@mui/icons-material/Error";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import styled from "@mui/material/styles/styled";
 import Toastr from "../components/common/Toastr/Toastr";
+
+// Styled components
+const StyledErrorIcon = styled(ErrorIcon)(({ theme }) => ({
+  color: theme.palette.error.main,
+}));
+
+const StyledCheckCircleIcon = styled(CheckCircleIcon)(({ theme }) => ({
+  color: theme.palette.success.main,
+}));
+
+// Types
+export type AlertType = "Error" | "Success";
 
 export interface AlertMessage {
   title: string;
@@ -21,109 +27,96 @@ export interface AlertMessage {
   timeout?: number;
 }
 
-const StyledErrorIcon = styled(ErrorIcon)(({ theme }) => ({
-  color: theme.palette.error.main,
-}));
-
-const StyledCheckCircleIcon = styled(CheckCircleIcon)(({ theme }) => ({
-  color: theme.palette.success.main,
-}));
-
-const availableIcons = {
-  Error: StyledErrorIcon,
-  Success: StyledCheckCircleIcon,
-};
-
-export type AlertType = "Error" | "Success";
+interface Alert extends AlertMessage {
+  id: string;
+  shown: boolean;
+}
 
 type AlertFunction = (alert: AlertMessage) => void;
 
+// Context
 const alertsContext = createContext<AlertFunction>(null!);
 
+// Provider Props
 export interface AlertsProviderProps {
+  children: React.ReactNode;
   onAlert?: (alert: AlertMessage) => void;
   anchorOrigin?: SnackbarOrigin;
-  children: React.ReactNode;
 }
 
-/**
- * Provide context for notification alerts usage
- * @param anchorOrigin    Screen position to display alerts, bottom-center by default
- * @param onAlert         Callback to be called when a new alert is pushed
- */
+const DEFAULT_TIMEOUT = 6000;
+
 export const AlertsProvider: React.FC<AlertsProviderProps> = ({
   children,
-  anchorOrigin = { vertical: "bottom", horizontal: "left" },
   onAlert,
+  anchorOrigin = { vertical: "bottom", horizontal: "left" },
 }) => {
-  const [canOpen, setCanOpen] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);
-  const [alert, setAlert] = useState<AlertMessage | null>(null);
-  const [awaitingAlert, setAwaitingAlert] = useState<AlertMessage | null>(null);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
 
-  const alertFunction = useCallback(
-    (alert: AlertMessage) => {
-      setAwaitingAlert(alert);
+  const removeAlert = useCallback((id: string) => {
+    setAlerts((prev) => prev.filter((alert) => alert.id !== id));
+  }, []);
+
+  const showAlert = useCallback(
+    (alertMessage: AlertMessage) => {
+      const newAlert: Alert = {
+        ...alertMessage,
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        shown: true,
+      };
+
+      setAlerts((prev) => [...prev, newAlert]);
       if (onAlert) {
-        onAlert(alert);
+        onAlert(alertMessage);
       }
     },
-    [setAwaitingAlert, onAlert],
+    [onAlert],
   );
 
-  const handleClose = useCallback(() => {
-    setIsOpen(false);
-  }, [setIsOpen]);
+  const handleClose = useCallback((id: string) => {
+    setAlerts((prev) =>
+      prev.map((alert) =>
+        alert.id === id ? { ...alert, shown: false } : alert,
+      ),
+    );
+  }, []);
 
-  const handleExit = useCallback(() => {
-    setAlert(null);
-    setCanOpen(true);
-  }, [setCanOpen, setAlert]);
-
-  useEffect(() => {
-    if (canOpen && awaitingAlert) {
-      setAlert(awaitingAlert);
-      setAwaitingAlert(null);
-      setIsOpen(true);
-      setCanOpen(false);
-    }
-  }, [
-    canOpen,
-    awaitingAlert,
-    setAlert,
-    setAwaitingAlert,
-    setIsOpen,
-    setCanOpen,
-  ]);
+  const icons = {
+    Error: StyledErrorIcon,
+    Success: StyledCheckCircleIcon,
+  };
 
   return (
-    <>
-      <alertsContext.Provider value={alertFunction}>
-        {children}
-      </alertsContext.Provider>
-      {alert && (
+    <alertsContext.Provider value={showAlert}>
+      {children}
+      {alerts.map((alert) => (
         <Toastr
-          onClose={handleClose}
+          key={alert.id}
+          open={alert.shown}
+          onClose={() => handleClose(alert.id)}
+          title={alert.title}
+          description={alert.description}
+          content={alert.content}
+          Icon={icons[alert.type]}
+          anchorOrigin={anchorOrigin}
           action={
-            <Button variant="text" onClick={handleClose}>
+            <Button
+              color="inherit"
+              size="small"
+              onClick={() => handleClose(alert.id)}
+            >
               Dismiss
             </Button>
           }
           SnackbarProps={{
             TransitionProps: {
-              onExit: handleExit,
+              onExited: () => removeAlert(alert.id),
             },
-            autoHideDuration: alert.timeout || 6000,
+            autoHideDuration: alert.timeout || DEFAULT_TIMEOUT,
           }}
-          title={alert.title}
-          content={alert.content}
-          description={alert.description}
-          Icon={availableIcons[alert.type]}
-          anchorOrigin={anchorOrigin}
-          open={isOpen}
         />
-      )}
-    </>
+      ))}
+    </alertsContext.Provider>
   );
 };
 
