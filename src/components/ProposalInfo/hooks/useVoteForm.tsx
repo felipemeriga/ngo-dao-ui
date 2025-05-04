@@ -7,7 +7,7 @@ export const useVoteForm = ({
 }: {
   handleAfterSubmit: () => void;
 }) => {
-  return useNGOForm<Vote>({
+  return useNGOForm<Vote, never>({
     handleAfterSubmit,
     useHook: useVote, // Pass the specific hook
     successMessage: "You have successfully voted for the proposal...",

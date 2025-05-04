@@ -158,7 +158,7 @@ const Header: React.FC = () => {
             title={<Typography variant="h4">Donate to NGO</Typography>}
             statusMessage={
               <>
-                {donateForm.form.formResults.isConfirming && (
+                {donateForm.form.isConfirming && (
                   <Typography variant="body1">Donating...</Typography>
                 )}
               </>
@@ -178,8 +178,8 @@ const Header: React.FC = () => {
 
                 <ProgressButton
                   id="donate-confirm"
-                  isLoading={donateForm.form.formResults.isLoading || false}
-                  disabled={donateForm.form.formResults.isLoading}
+                  isLoading={donateForm.form.isLoading || false}
+                  disabled={donateForm.form.isLoading}
                   onClick={() => {
                     donateForm.form.handleSubmit();
                   }}

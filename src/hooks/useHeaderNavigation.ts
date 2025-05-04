@@ -52,7 +52,7 @@ export const useHeaderNavigation = () => {
       closeDonateDialog: () => {
         closeDonateDialog();
         // Reset form to clear any custom validations
-        donateProposalForm.reset();
+        donateProposalForm.formMethods.reset();
       },
       form: donateProposalForm,
     },

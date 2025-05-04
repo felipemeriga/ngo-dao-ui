@@ -8,16 +8,20 @@ export interface CreateProposalForm {
   data: string;
 }
 
-export interface DonateForm {
-  value: number;
-}
-
 export interface CreateProposal {
   title: string;
   description: string;
   target: string;
   value: bigint;
   data: string;
+}
+
+export interface DonateForm {
+  value: number;
+}
+
+export interface Donate {
+  value: bigint;
 }
 
 export interface Vote {

@@ -8,10 +8,15 @@ import {
   usePublicClient,
 } from "wagmi";
 import { NGODAO__factory } from "../types";
-import { CreateProposal, Vote, WriteContractHook } from "../types/types.ts";
+import {
+  CreateProposal,
+  Donate,
+  Vote,
+  WriteContractHook,
+} from "../types/types.ts";
 
 const contractConfig = {
-  address: "0x865C2A7104e77b601B39ab266a13Ab08426fB211",
+  address: "0x30F946CEe4D47c02Bf5570054991d811262467d6",
   abi: NGODAO__factory.abi,
 };
 
@@ -96,7 +101,7 @@ export const useVoted = (proposalId: `0x${string}` | null) => {
   };
 };
 
-export const useDonate = () => {
+export const useDonate = (): WriteContractHook<Donate> => {
   // Hook for writing to the contract
   const {
     data: donationTxHash,
@@ -112,19 +117,19 @@ export const useDonate = () => {
     });
 
   // Function to trigger the donation transaction
-  const donate = (amount: bigint) => {
+  const write = (donate: Donate) => {
     writeContract({
       abi: NGODAO__factory.abi,
       address: contractConfig.address as `0x${string}`,
       functionName: "donate",
       args: [],
-      value: amount,
+      value: donate.value,
     });
   };
 
   return {
     hash: donationTxHash,
-    donate, // Function to trigger the donation
+    write, // Function to trigger the donation
     isPending, // Transaction submission state
     isConfirming, // Transaction confirmation in-progress
     isConfirmed, // Transaction successfully confirmed
