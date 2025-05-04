@@ -1,6 +1,6 @@
 import { useVote } from "../../../hooks/useNGODAO.ts";
 import { Vote } from "../../../types/types.ts";
-import { useNGOForm } from "../../../hooks/useForm.tsx";
+import { useNGOForm } from "../../../hooks/useNGOForm.tsx";
 
 export const useVoteForm = ({
   handleAfterSubmit,

@@ -1,5 +1,5 @@
 import { useExecute } from "../../../hooks/useNGODAO.ts";
-import { useNGOForm } from "../../../hooks/useForm.tsx";
+import { useNGOForm } from "../../../hooks/useNGOForm.tsx";
 
 export const useExecuteForm = ({
   handleAfterSubmit,
