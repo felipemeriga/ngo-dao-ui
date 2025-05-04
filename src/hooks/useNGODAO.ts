@@ -8,7 +8,7 @@ import {
   usePublicClient,
 } from "wagmi";
 import { NGODAO__factory } from "../types";
-import { CreateProposal, Vote } from "../types/types.ts";
+import { CreateProposal, Vote, WriteContractHook } from "../types/types.ts";
 
 const contractConfig = {
   address: "0x865C2A7104e77b601B39ab266a13Ab08426fB211",
@@ -164,7 +164,7 @@ export const useCreateProposal = () => {
   };
 };
 
-export const useVote = () => {
+export const useVote = (): WriteContractHook<Vote> => {
   const { data: hash, error, isPending, writeContract } = useWriteContract();
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
@@ -187,11 +187,11 @@ export const useVote = () => {
     isPending,
     isConfirming,
     isConfirmed,
-    vote,
+    write: vote,
   };
 };
 
-export const useExecute = () => {
+export const useExecute = (): WriteContractHook<`0x${string}`> => {
   const { data: hash, error, isPending, writeContract } = useWriteContract();
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
@@ -214,7 +214,7 @@ export const useExecute = () => {
     isPending,
     isConfirming,
     isConfirmed,
-    execute,
+    write: execute,
   };
 };
 

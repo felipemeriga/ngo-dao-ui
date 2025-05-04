@@ -1,3 +1,5 @@
+import { type WriteContractErrorType } from "@wagmi/core";
+
 export interface CreateProposalForm {
   title: string;
   description: string;
@@ -34,4 +36,13 @@ export interface Proposal {
   yesVotes: bigint;
   noVotes: bigint;
   executed: boolean;
+}
+
+export interface WriteContractHook<T> {
+  hash: string | undefined;
+  error: WriteContractErrorType | null;
+  isPending: boolean;
+  isConfirming: boolean;
+  isConfirmed: boolean;
+  write: (data: T) => void;
 }

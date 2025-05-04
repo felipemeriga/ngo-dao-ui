@@ -131,20 +131,21 @@ const ProposalsTable: React.FC = () => {
               title={<Typography variant="h4">{proposal?.title}</Typography>}
               statusMessage={
                 <>
-                  {voteForm.formResults.isConfirming && (
+                  {voteForm.isConfirming && (
                     <Typography variant="body1">Voting...</Typography>
                   )}
-                  {executeForm.formResults.isConfirming && (
+                  {executeForm.isConfirming && (
                     <Typography variant="body1">Executing...</Typography>
                   )}
                 </>
               }
+              t
               actions={
                 <>
                   <ProgressButton
                     id="proposal-info-execute"
-                    isLoading={executeForm.formResults.isLoading}
-                    disabled={!isOwner || executeForm.formResults.isLoading}
+                    isLoading={executeForm.isLoading}
+                    disabled={!isOwner || executeForm.isLoading}
                     onClick={() => {
                       executeForm.handleSubmit(proposal.id);
                     }}
@@ -155,11 +156,11 @@ const ProposalsTable: React.FC = () => {
                   </ProgressButton>
                   <ProgressButton
                     id="proposal-info-approve"
-                    isLoading={isVotedLoading || voteForm.formResults.isLoading}
+                    isLoading={isVotedLoading || voteForm.isLoading}
                     disabled={
                       !isInTheFuture(proposal.deadline) ||
                       hasVoted ||
-                      voteForm.formResults.isLoading
+                      voteForm.isLoading
                     }
                     onClick={() => {
                       voteForm.handleSubmit({
@@ -174,11 +175,11 @@ const ProposalsTable: React.FC = () => {
                   </ProgressButton>
                   <ProgressButton
                     id="proposal-info-disapprove"
-                    isLoading={isVotedLoading || voteForm.formResults.isLoading}
+                    isLoading={isVotedLoading || voteForm.isLoading}
                     disabled={
                       !isInTheFuture(proposal.deadline) ||
                       hasVoted ||
-                      voteForm.formResults.isLoading
+                      voteForm.isLoading
                     }
                     onClick={() => {
                       voteForm.handleSubmit({
