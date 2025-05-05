@@ -105,7 +105,7 @@ const Header: React.FC = () => {
             title={<Typography variant="h4">Create Proposal</Typography>}
             statusMessage={
               <>
-                {createProposalForm.form.formResults.isConfirming && (
+                {createProposalForm.form.isConfirming && (
                   <Typography variant="body1">Creating proposal...</Typography>
                 )}
               </>
@@ -125,10 +125,8 @@ const Header: React.FC = () => {
 
                 <ProgressButton
                   id="create-proposal-confirm"
-                  isLoading={
-                    createProposalForm.form.formResults.isLoading || false
-                  }
-                  disabled={createProposalForm.form.formResults.isLoading}
+                  isLoading={createProposalForm.form.isLoading || false}
+                  disabled={createProposalForm.form.isLoading}
                   onClick={() => {
                     createProposalForm.form.handleSubmit();
                   }}

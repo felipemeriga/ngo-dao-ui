@@ -1,97 +1,37 @@
-import { useEffect, useState, useRef } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { CreateProposalForm } from "../../../types/types.ts";
+import { useForm } from "react-hook-form";
+import { CreateProposal, CreateProposalForm } from "../../../types/types.ts";
 import { useCreateProposal } from "../../../hooks/useNGODAO.ts";
-import { waitForResult, weiValue } from "../../../utils/utils.ts";
-import { useAlerts } from "../../../providers/AlertsProvider.tsx";
-import EtherScanLink from "../../common/EtherScanLink/EtherScanLink.tsx";
-import { config } from "../../../config.ts";
-import { WagmiProvider } from "wagmi";
+import { weiValue } from "../../../utils/utils.ts";
+import { useNGOForm, WithFormResults } from "../../../hooks/useNGOForm.tsx";
 
-interface InputProps {
+export const useCreateProposalForm = ({
+  handleAfterSubmit,
+}: {
   handleAfterSubmit: () => void;
-}
-
-interface FormResults {
-  isLoading: boolean;
-  hash: string;
-  isConfirmed: boolean;
-  isConfirming: boolean;
-}
-
-export const useCreateProposalForm = ({ handleAfterSubmit }: InputProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const alerts = useAlerts();
-  const { createProposal, isPending, error, hash, isConfirming, isConfirmed } =
-    useCreateProposal();
-  const methods = useForm<CreateProposalForm>({
+}) => {
+  const formMethods = useForm<CreateProposalForm>({
     mode: "onChange", // Ensure validation triggers on input
     defaultValues: { value: 0, target: "", title: "", description: "" },
   });
-
-  // Block `handleAfterSubmit` from being called multiple times
-  const hasHandledSubmit = useRef(false);
-
-  useEffect(() => {
-    if (hash && isConfirmed && !isPending && !hasHandledSubmit.current) {
-      hasHandledSubmit.current = true;
-      handleAfterSubmit(); // Ensure it only gets executed once
-      setIsLoading(false);
-      methods.reset();
-      alerts({
-        title: "Success",
-        description: "The proposal was created successfully...",
-        content: (
-          <WagmiProvider config={config}>
-            <EtherScanLink
-              showAddress={false}
-              walletAddress={hash as string}
-              isTransaction={true}
-            />
-          </WagmiProvider>
-        ),
-        type: "Success",
-      });
-    }
-
-    if (error && !hasHandledSubmit.current) {
-      hasHandledSubmit.current = true;
-      if (!error.message.includes("User rejected the request")) {
-        console.log(error);
-      }
-      handleAfterSubmit(); // Ensure it only gets executed once
-      setIsLoading(false);
-    }
-  }, [hash, error, isPending, isConfirmed, alerts, handleAfterSubmit, methods]);
-
-  const onSubmit: SubmitHandler<CreateProposalForm> = async (formData) => {
-    setIsLoading(true);
-    hasHandledSubmit.current = false; // Reset before execution
-    const wei = weiValue(formData.value);
-
-    createProposal({
-      title: formData.title,
-      description: formData.description,
-      target: formData.target,
-      value: wei,
-      data: formData.data,
-    });
-
-    // Wait for the proposal submission to complete or an error to occur
-    await waitForResult();
-  };
+  const ngoForm = useNGOForm<CreateProposal, CreateProposalForm>({
+    handleAfterSubmit,
+    useHook: useCreateProposal,
+    successMessage: "You have successfully submitted a proposal...",
+    formMethods,
+    transformData: (formData: CreateProposalForm) => {
+      const wei = weiValue(formData.value);
+      return {
+        title: formData.title,
+        description: formData.description,
+        target: formData.target,
+        value: wei,
+        data: formData.data,
+      } as CreateProposal;
+    },
+  }) as WithFormResults;
 
   return {
-    formMethods: methods,
-    handleSubmit: () => {
-      return methods.handleSubmit((data) => onSubmit(data))();
-    },
-    reset: () => methods.reset(),
-    formResults: {
-      isLoading,
-      hash,
-      isConfirmed,
-      isConfirming,
-    } as FormResults,
+    formMethods,
+    ...ngoForm,
   };
 };

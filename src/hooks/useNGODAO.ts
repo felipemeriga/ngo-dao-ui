@@ -137,7 +137,7 @@ export const useDonate = (): WriteContractHook<Donate> => {
   };
 };
 
-export const useCreateProposal = () => {
+export const useCreateProposal = (): WriteContractHook<CreateProposal> => {
   const { data: hash, error, isPending, writeContract } = useWriteContract();
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
@@ -145,12 +145,7 @@ export const useCreateProposal = () => {
       hash,
     });
 
-  const createProposal = ({
-    title,
-    description,
-    target,
-    value,
-  }: CreateProposal) => {
+  const write = ({ title, description, target, value }: CreateProposal) => {
     writeContract({
       abi: NGODAO__factory.abi,
       address: contractConfig.address as `0x${string}`,
@@ -165,7 +160,7 @@ export const useCreateProposal = () => {
     isPending,
     isConfirming,
     isConfirmed,
-    createProposal,
+    write,
   };
 };
 

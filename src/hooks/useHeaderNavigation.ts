@@ -40,7 +40,7 @@ export const useHeaderNavigation = () => {
       closeCreateProposalDialog: () => {
         closeCreateProposalDialog();
         // Reset form to clear any custom validations
-        createProposalForm.reset();
+        createProposalForm.formMethods.reset();
       },
       form: createProposalForm,
     },
