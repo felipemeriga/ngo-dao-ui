@@ -144,7 +144,11 @@ const ProposalsTable: React.FC = () => {
                   <ProgressButton
                     id="proposal-info-execute"
                     isLoading={executeForm.isLoading}
-                    disabled={!isOwner || executeForm.isLoading}
+                    disabled={
+                      !isOwner ||
+                      isInTheFuture(proposal.deadline) ||
+                      executeForm.isLoading
+                    }
                     onClick={() => {
                       executeForm.handleSubmit(proposal.id);
                     }}
