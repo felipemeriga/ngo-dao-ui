@@ -11,8 +11,14 @@ export const useProposalInfo = (handleRefetch: () => void) => {
   const [
     isProposalInfoDialogOpened,
     openProposalInfoDialog,
-    closeProposalInfoDialog,
+    closeProposalInfoDialogBase,
   ] = useDialog();
+
+  // Wrap closeProposalInfoDialog to reset both states
+  const closeProposalInfoDialog = useCallback(() => {
+    closeProposalInfoDialogBase();
+    setSelectedProposal(null);
+  }, [closeProposalInfoDialogBase]);
 
   // Wrap handleAfterSubmit in useCallback
   const handleAfterSubmit = useCallback(() => {
