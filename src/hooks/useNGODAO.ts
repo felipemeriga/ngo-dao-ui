@@ -16,7 +16,7 @@ import {
 } from "../types/types.ts";
 
 const contractConfig = {
-  address: "0x30F946CEe4D47c02Bf5570054991d811262467d6",
+  address: import.meta.env.VITE_CONTRACT_ADDRESS as `0x${string}`,
   abi: NGODAO__factory.abi,
 };
 

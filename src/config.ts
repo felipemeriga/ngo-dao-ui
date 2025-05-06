@@ -8,8 +8,6 @@ export const config = createConfig({
   transports: {
     [mainnet.id]: http(),
     [base.id]: http(),
-    [sepolia.id]: http(
-      "https://eth-sepolia.g.alchemy.com/v2/d6TNNGOzxR3s4w8iYyWkER1C2R0mTldx",
-    ),
+    [sepolia.id]: http(import.meta.env.VITE_SEPOLIA_RPC as string),
   },
 });
