@@ -2,13 +2,13 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import styled from "@mui/material/styles/styled";
 import { CardInfo } from "../common/CardInfo";
-import {
-  useDonations,
-  useTotalDonations,
-  useVotingPeriod,
-} from "../../hooks/useNGODAO.ts";
+import { useVotingPeriod } from "../../hooks/useNGODAO.ts";
 import { ethValue } from "../../utils/utils.ts";
 import { ProposalsTable } from "../ProposalsTable";
+import {
+  useNGOBalanceContext,
+  useUserDonationsContext,
+} from "../../providers/DashboardInfoProvider.tsx";
 
 const ExternalContainer = styled("div")({
   padding: "100px 100px 100px 100px",
@@ -52,13 +52,13 @@ const Dashboard: React.FC = () => {
         <CardInfo
           title={"Current NGO Balance"}
           description={"ETH"}
-          useInfo={useTotalDonations}
+          useInfo={useNGOBalanceContext}
           convertData={convertETH}
         />
         <CardInfo
           title={"Current User Donations"}
           description={"ETH"}
-          useInfo={useDonations}
+          useInfo={useUserDonationsContext}
           convertData={convertETH}
         />
       </Box>

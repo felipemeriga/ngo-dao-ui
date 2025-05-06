@@ -3,9 +3,16 @@ import { useCreateProposalForm } from "../components/CreateProposalFormContent/h
 import { useProposalsContext } from "../providers/ProposalsProvider.tsx";
 import { useCallback } from "react";
 import { useDonateForm } from "../components/DonateFormContent/hooks/useDonateForm.tsx";
+import {
+  useNGOBalanceContext,
+  useUserDonationsContext,
+} from "../providers/DashboardInfoProvider.tsx";
 
 export const useHeaderNavigation = () => {
-  const { handleRefetch } = useProposalsContext();
+  const { handleRefetch: handleRefetchProposals } = useProposalsContext();
+  const { handleRefetch: handleRefetchNGOBalance } = useNGOBalanceContext();
+  const { handleRefetch: handleRefetchUserDonations } =
+    useUserDonationsContext();
 
   const [
     isCreateProposalDialogOpened,
@@ -20,8 +27,16 @@ export const useHeaderNavigation = () => {
   const handleAfterSubmit = useCallback(() => {
     closeCreateProposalDialog();
     closeDonateDialog();
-    handleRefetch(); // Call refetch here without entire, re-execution on every render
-  }, [closeCreateProposalDialog, handleRefetch, closeDonateDialog]);
+    handleRefetchProposals();
+    handleRefetchNGOBalance();
+    handleRefetchUserDonations();
+  }, [
+    closeCreateProposalDialog,
+    handleRefetchProposals,
+    closeDonateDialog,
+    handleRefetchNGOBalance,
+    handleRefetchUserDonations,
+  ]);
 
   const createProposalForm = useCreateProposalForm({
     handleAfterSubmit,

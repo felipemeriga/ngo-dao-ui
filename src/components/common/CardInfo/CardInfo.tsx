@@ -4,12 +4,7 @@ import CardContent from "@mui/material/CardContent";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import { LoadingContainer } from "../Loading/Loading";
-
-interface HookInfo {
-  isLoading: boolean;
-  isError: boolean;
-  data: bigint | undefined;
-}
+import { HookInfo } from "../../../types/types.ts";
 
 interface CardInfoProps {
   convertData: (data: bigint | undefined) => number | undefined;

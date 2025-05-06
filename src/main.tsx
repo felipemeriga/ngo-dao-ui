@@ -9,6 +9,10 @@ import { AlertsProvider } from "./providers/AlertsProvider.tsx";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./theme/theme.ts";
 import { ProposalsProvider } from "./providers/ProposalsProvider.tsx";
+import {
+  NGOBalanceProvider,
+  UserDonationsProvider,
+} from "./providers/DashboardInfoProvider.tsx";
 
 const queryClient = new QueryClient();
 
@@ -19,7 +23,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <WagmiProvider config={config}>
           <QueryClientProvider client={queryClient}>
             <ProposalsProvider>
-              <App />
+              <NGOBalanceProvider>
+                <UserDonationsProvider>
+                  <App />
+                </UserDonationsProvider>
+              </NGOBalanceProvider>
             </ProposalsProvider>
           </QueryClientProvider>
         </WagmiProvider>

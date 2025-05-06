@@ -1,4 +1,6 @@
 import { type WriteContractErrorType } from "@wagmi/core";
+import { QueryObserverResult } from "@tanstack/react-query";
+import { ReadContractErrorType } from "viem";
 
 export interface CreateProposalForm {
   title: string;
@@ -49,4 +51,18 @@ export interface WriteContractHook<T> {
   isConfirming: boolean;
   isConfirmed: boolean;
   write: (data: T) => void;
+}
+
+export interface HookBase {
+  isLoading: boolean;
+  isError: boolean;
+  data: bigint | undefined;
+}
+
+export interface HookInfo extends HookBase {
+  handleRefetch?: () => void;
+}
+
+export interface HookContext extends HookBase {
+  refetch: () => Promise<QueryObserverResult<bigint, ReadContractErrorType>>;
 }

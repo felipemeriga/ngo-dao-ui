@@ -4,9 +4,11 @@ import { useVoted } from "../../../hooks/useNGODAO.ts";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useVoteForm } from "./useVoteForm.tsx";
 import { useExecuteForm } from "./useExecuteForm.tsx";
+import { useNGOBalanceContext } from "../../../providers/DashboardInfoProvider.tsx";
 
 export const useProposalInfo = (handleRefetch: () => void) => {
   const [proposal, setSelectedProposal] = useState<Proposal | null>(null);
+  const { handleRefetch: handleRefetchNGOBalance } = useNGOBalanceContext();
 
   const [
     isProposalInfoDialogOpened,
@@ -23,8 +25,9 @@ export const useProposalInfo = (handleRefetch: () => void) => {
   // Wrap handleAfterSubmit in useCallback
   const handleAfterSubmit = useCallback(() => {
     closeProposalInfoDialog();
-    handleRefetch(); // Call refetch here without entire, re-execution on every render
-  }, [closeProposalInfoDialog, handleRefetch]);
+    handleRefetch();
+    handleRefetchNGOBalance();
+  }, [closeProposalInfoDialog, handleRefetch, handleRefetchNGOBalance]);
 
   const voteForm = useVoteForm({
     handleAfterSubmit,
