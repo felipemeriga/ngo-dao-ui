@@ -6,7 +6,7 @@ export const useExecuteForm = ({
 }: {
   handleAfterSubmit: () => void;
 }) => {
-  return useNGOForm<`0x${string}`>({
+  return useNGOForm<`0x${string}`, {}>({
     handleAfterSubmit,
     useHook: useExecute, // Pass the specific hook
     successMessage: "You have successfully executed the proposal...",
