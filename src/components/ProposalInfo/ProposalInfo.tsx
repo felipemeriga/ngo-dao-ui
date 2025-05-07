@@ -42,6 +42,7 @@ const ProposalInfo: React.FC<ProposalProps> = ({ proposal }) => {
               <div>
                 <h2>Target</h2>
                 <EtherScanLink
+                  isTransaction={false}
                   showAddress={true}
                   walletAddress={proposal.target as string}
                 />
