@@ -147,7 +147,9 @@ const ProposalsTable: React.FC = () => {
                     disabled={
                       !isOwner ||
                       isInTheFuture(proposal.deadline) ||
-                      executeForm.isLoading
+                      executeForm.isLoading ||
+                      proposal.noVotes >= proposal.yesVotes ||
+                      proposal.executed
                     }
                     onClick={() => {
                       executeForm.handleSubmit(proposal.id);
